@@ -11,13 +11,15 @@ import os
 # from sklearn.ensemble import RandomForestRegressor
 # from sklearn.metrics import mean_squared_error, mean_squared_log_error
 
+userSelection = 'Singapore'
+
 # Dataframes
-data1 = pd.read_excel("../SampleGDPAnalysis/dataSet/sampleDataSet/SAMPLE - Agriculture, forestry, and fishing, value added (% of GDP).xlsx")
-data2 = pd.read_excel("../SampleGDPAnalysis/dataSet/sampleDataSet/SAMPLE - Arable land (% of land area).xlsx")
-data3 = pd.read_excel("../SampleGDPAnalysis/dataSet/sampleDataSet/SAMPLE - GDP per capita (constant LCU).xlsx")
-sgrow1 = data1.loc[data1['Country Name'] == 'Singapore']
-sgrow2 = data2.loc[data2['Country Name'] == 'Singapore']
-sgrow3 = data3.loc[data3['Country Name'] == 'Singapore']
+data1 = pd.read_excel("../Datasets/SAMPLE - Agriculture, forestry, and fishing, value added (% of GDP).xlsx")
+data2 = pd.read_excel("../Datasets/SAMPLE - Arable land (% of land area).xlsx")
+data3 = pd.read_excel("../Datasets/SAMPLE - GDP per capita (constant LCU).xlsx")
+sgrow1 = data1.loc[data1['Country Name'] == userSelection]
+sgrow2 = data2.loc[data2['Country Name'] == userSelection]
+sgrow3 = data3.loc[data3['Country Name'] == userSelection]
 
 # Transposing columns and rows
 sgcol3 = sgrow3.T
