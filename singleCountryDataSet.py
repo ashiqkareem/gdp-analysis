@@ -65,19 +65,31 @@ colServ = rowServ.T
 colArea = rowArea.T
 
 # Concatenating the different factors into 1 dataframe
-df = pd.concat([colGDP, colAgri, colArab], axis=1)
+df = pd.concat([colGDP, colAgri, colArab, colBirth, colDeath, colIndiv, colIndus, colMobile, colMort, colMig, colCrop, colPopDen,
+                colPop, colServ, colArea], axis=1)
 df.columns = ['GDP', 'Agriculture', 'Arable Land', 'Birth Rate', 'Death Rate', 'Individual Internet usage', 'Industry',
               'Mobile Subscriptions', 'Mortality Rate','Migration Net','Cropland','Population Density','Population',
-              'Services','Surface Area']
+              'Services', 'Surface Area']
 df.drop(['Series Name', 'Series Code', 'Country Name', 'Country Code'], axis=0, inplace=True)
 df = pd.DataFrame(df, dtype=float)
 
 # Making of a line graph
-ax = sns.lineplot(x='Agriculture', y='GDP', data=df)
+plt.figure(1)
+sns.lineplot(x='Agriculture', y='GDP', data=df)
+plt.figure(2)
+sns.lineplot(x='Arable Land', y='GDP', data=df)
+plt.figure(3)
+sns.lineplot(x='Birth Rate', y='GDP', data=df)
 plt.show()
 
 # Correlation value of GDP vs factor (requires a for loop implementation)
-col1 = df["GDP"]
-col2 = df["Agriculture"]
-correlation = col1.corr(col2)
-print(correlation)
+corrList = []
+for i in range(1, len(df.columns)):
+    col1 = df['GDP']
+    col2 = df[df.columns[i]]
+    correlation = col1.corr(col2)
+    corrList.append(correlation)
+
+
+print(corrList)
+
