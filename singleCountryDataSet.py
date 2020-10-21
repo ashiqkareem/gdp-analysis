@@ -23,7 +23,7 @@ dataIndiv = pd.read_excel('../gdp-analysis/Datasets/SAMPLE - Individuals using t
 dataIndus = pd.read_excel('../gdp-analysis/Datasets/SAMPLE - Industry (including construction), value added (% of GDP).xlsx')
 dataMobile = pd.read_excel('../gdp-analysis/Datasets/SAMPLE - Mobile cellular subscriptions (per 100 people).xlsx')
 dataMort = pd.read_excel('../gdp-analysis/Datasets/SAMPLE - Mortality rate, infant (per 1,000 live births).xlsx')
-dataMig = pd.read_excel('../gdp-analysis/Datasets/SAMPLE - Net migration.xlsx')
+#dataMig = pd.read_excel('../gdp-analysis/Datasets/SAMPLE - Net migration.xlsx')
 dataCrop = pd.read_excel('../gdp-analysis/Datasets/SAMPLE - Permanent cropland (% of land area).xlsx')
 dataPopDen = pd.read_excel('../gdp-analysis/Datasets/SAMPLE - Population density (people per sq. km of land area).xlsx')
 dataPop = pd.read_excel('../gdp-analysis/Datasets/SAMPLE - Population, total.xlsx')
@@ -40,7 +40,7 @@ rowIndiv = dataIndiv.loc[dataIndiv['Country Name'] == userSelection]
 rowIndus = dataIndus.loc[dataIndus['Country Name'] == userSelection]
 rowMobile = dataMobile.loc[dataMobile['Country Name'] == userSelection]
 rowMort = dataMort.loc[dataMort['Country Name'] == userSelection]
-rowMig = dataMig.loc[dataMig['Country Name'] == userSelection]
+#rowMig = dataMig.loc[dataMig['Country Name'] == userSelection]
 rowCrop = dataCrop.loc[dataCrop['Country Name'] == userSelection]
 rowPopDen = dataPopDen.loc[dataPopDen['Country Name'] == userSelection]
 rowPop = dataPop.loc[dataPop['Country Name'] == userSelection]
@@ -57,7 +57,7 @@ colIndiv = rowIndiv.T
 colIndus = rowIndus.T
 colMobile = rowMobile.T
 colMort = rowMort.T
-colMig = rowMig.T
+#colMig = rowMig.T
 colCrop = rowCrop.T
 colPopDen = rowPopDen.T
 colPop = rowPop.T
@@ -65,31 +65,46 @@ colServ = rowServ.T
 colArea = rowArea.T
 
 # Concatenating the different factors into 1 dataframe
-df = pd.concat([colGDP, colAgri, colArab, colBirth, colDeath, colIndiv, colIndus, colMobile, colMort, colMig, colCrop, colPopDen,
+df = pd.concat([colGDP, colAgri, colArab, colBirth, colDeath, colIndiv, colIndus, colMobile, colMort, colCrop, colPopDen,
                 colPop, colServ, colArea], axis=1)
 df.columns = ['GDP', 'Agriculture', 'Arable Land', 'Birth Rate', 'Death Rate', 'Individual Internet usage', 'Industry',
-              'Mobile Subscriptions', 'Mortality Rate','Migration Net','Cropland','Population Density','Population',
+              'Mobile Subscriptions', 'Mortality Rate','Cropland','Population Density','Population',
               'Services', 'Surface Area']
 df.drop(['Series Name', 'Series Code', 'Country Name', 'Country Code'], axis=0, inplace=True)
 df = pd.DataFrame(df, dtype=float)
 
-# Making of a line graph
-plt.figure(1)
-sns.lineplot(x='Agriculture', y='GDP', data=df)
-plt.figure(2)
-sns.lineplot(x='Arable Land', y='GDP', data=df)
-plt.figure(3)
-sns.lineplot(x='Birth Rate', y='GDP', data=df)
-plt.show()
-
 # Correlation value of GDP vs factor (requires a for loop implementation)
-corrList = []
+corrDict = {}
 for i in range(1, len(df.columns)):
     col1 = df['GDP']
     col2 = df[df.columns[i]]
     correlation = col1.corr(col2)
-    corrList.append(correlation)
+    corrDict[df.columns[i]] = correlation
+
+Top3CorrDict = sorted(corrDict.items(), key=lambda x: x[1], reverse=True)[:3]
+Bot3CorrDict = sorted(corrDict.items(), key=lambda x: x[1], reverse=True)[-3:]
+
+# Making of Top 3 line graph
+def top3():
+    plt.subplot(3, 1, 1)
+    sns.lineplot(x=Top3CorrDict[0][0], y='GDP', data=df)
+    plt.subplot(3, 1, 2)
+    sns.lineplot(x=Top3CorrDict[1][0], y='GDP', data=df)
+    plt.subplot(3, 1, 3)
+    sns.lineplot(x=Top3CorrDict[2][0], y='GDP', data=df)
+    plt.tight_layout()
+    plt.show()
+
+# Making of Bottom 3 line graph
+def bot3():
+    plt.subplot(3, 1, 1)
+    sns.lineplot(x=Bot3CorrDict[0][0], y='GDP', data=df)
+    plt.subplot(3, 1, 2)
+    sns.lineplot(x=Bot3CorrDict[1][0], y='GDP', data=df)
+    plt.subplot(3, 1, 3)
+    sns.lineplot(x=Bot3CorrDict[2][0], y='GDP', data=df)
+    plt.tight_layout()
+    plt.show()
 
 
-print(corrList)
-
+top3()
