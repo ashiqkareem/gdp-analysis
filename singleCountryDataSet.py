@@ -86,6 +86,7 @@ Bot3CorrDict = sorted(corrDict.items(), key=lambda x: x[1], reverse=True)[-3:]
 
 # Making of Top 3 line graph
 def top3():
+    plt.figure("Top 3 Factors that affects GDP")
     plt.subplot(3, 1, 1)
     sns.lineplot(x=Top3CorrDict[0][0], y='GDP', data=df)
     plt.subplot(3, 1, 2)
@@ -97,6 +98,7 @@ def top3():
 
 # Making of Bottom 3 line graph
 def bot3():
+    plt.figure("Bottom 3 Factors that affects GDP")
     plt.subplot(3, 1, 1)
     sns.lineplot(x=Bot3CorrDict[0][0], y='GDP', data=df)
     plt.subplot(3, 1, 2)
