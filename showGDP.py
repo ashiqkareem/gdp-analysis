@@ -17,18 +17,6 @@ from data import *
 userSelection = 1960
 df = pd.DataFrame(dataGDP)
 
-"""
-# Concatenating the different factors into 1 dataframe
-df_2 = pd.concat([dataGDP, dataAgri, dataArab, dataBirth, dataDeath, dataIndiv, dataIndus, dataMobile,
-                  dataMort, dataCrop, dataPopDen, dataPop, dataServ, dataArea], axis=1)
-df_2 = pd.DataFrame(df_2)
-df_2 = df_2.T
-df_2.drop(['Series Code', 'Series Name', 'Country Code', 'Country Name'], axis=0, inplace=True)
-
-print(df_2)
-df_2.to_excel(r'C:\Users\JingX\Desktop\JX_SIT\test.xlsx', index=False)
-"""
-
 
 # Setting the basic style for plots
 def plot_design(title):
