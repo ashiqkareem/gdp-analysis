@@ -10,6 +10,7 @@ import os
 # from sklearn.tree import DecisionTreeRegressor
 # from sklearn.ensemble import RandomForestRegressor
 # from sklearn.metrics import mean_squared_error, mean_squared_log_error
+from matplotlib.pyplot import table
 
 userSelection = 'Singapore'
 
@@ -81,32 +82,44 @@ for i in range(1, len(df.columns)):
     correlation = col1.corr(col2)
     corrDict[df.columns[i]] = correlation
 
-Top3CorrDict = sorted(corrDict.items(), key=lambda x: x[1], reverse=True)[:3]
+GDPCorrDict = sorted(corrDict.items(), key=lambda x: x[1], reverse=True)
 Bot3CorrDict = sorted(corrDict.items(), key=lambda x: x[1], reverse=True)[-3:]
 
+
+
 # Making of Top 3 line graph
-def top3():
-    plt.figure("Top 3 Factors that affects GDP")
-    plt.subplot(3, 1, 1)
-    sns.lineplot(x=Top3CorrDict[0][0], y='GDP', data=df)
-    plt.subplot(3, 1, 2)
-    sns.lineplot(x=Top3CorrDict[1][0], y='GDP', data=df)
-    plt.subplot(3, 1, 3)
-    sns.lineplot(x=Top3CorrDict[2][0], y='GDP', data=df)
+def displayFactorsGraph():
+    plt.figure("GDP Factors")
+    plt.suptitle("%s GDP Factors" %userSelection)
+    for i in range(len(GDPCorrDict)):
+        plt.subplot(5, 3, i + 1)
+        sns.lineplot(x=GDPCorrDict[i][0], y='GDP', data=df)
     plt.tight_layout()
     plt.show()
 
 # Making of Bottom 3 line graph
-def bot3():
-    plt.figure("Bottom 3 Factors that affects GDP")
-    plt.subplot(3, 1, 1)
-    sns.lineplot(x=Bot3CorrDict[0][0], y='GDP', data=df)
-    plt.subplot(3, 1, 2)
-    sns.lineplot(x=Bot3CorrDict[1][0], y='GDP', data=df)
-    plt.subplot(3, 1, 3)
-    sns.lineplot(x=Bot3CorrDict[2][0], y='GDP', data=df)
-    plt.tight_layout()
+
+def displayCorrExcel():
+    corrDF = pd.DataFrame(data=corrDict, index=[0])
+    corrDF.index = ['Correlation Value']
+    corrDF = (corrDF.T)
+    corrDF.to_excel('%s correlation values of GDP Factors.xlsx'%userSelection)
+
+
+def displayCorrTable():
+    plt.figure("GDP Factors correlation values")
+    df = pd.DataFrame(data=corrDict, index=[0]).T
+    df.columns = ['Correlation Value']
+    plt.suptitle("%s GDP Factors correlation values" % userSelection)
+    cell_text = np.round(df.values, 3)
+    table = plt.table(cellText=cell_text, rowLabels=df.index, colLabels=df.columns, loc="center", cellLoc="center",
+                       bbox=[0.5, 0.15, 0.3, 0.8])
+    table.set_fontsize(10)
+    table.auto_set_font_size(False)
+    table.scale(1, 1)
+    plt.axis("off")
+    plt.grid(False)
     plt.show()
 
 
-top3()
+displayCorrTable()
