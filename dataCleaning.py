@@ -13,27 +13,23 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_squared_log_error
 
-userSelection = 'Germany'
+userSelection = 'China'
 
 # Dataframes
-dataGDP = pd.read_csv('../gdp-analysis/rawDataSet/GDP per capita (constant LCU).csv')
-dataAgri = pd.read_csv('../gdp-analysis/rawDataSet/Agriculture, forestry, and fishing, value added (% of GDP).csv')
-dataArab = pd.read_csv('../gdp-analysis/rawDataSet/Arable land (% of land area).csv')
-dataBirth = pd.read_csv('../gdp-analysis/rawDataSet/Birth rate, crude (per 1,000 people).csv')
-dataDeath = pd.read_csv('../gdp-analysis/rawDataSet/Death rate, crude (per 1,000 people).csv')
-dataIndiv = pd.read_csv('../gdp-analysis/rawDataSet/Individuals using the Internet (% of population).csv')
-dataIndus = pd.read_csv('../gdp-analysis/rawDataSet/Industry (including construction), value added (% of GDP).csv')
-dataMobile = pd.read_csv('../gdp-analysis/rawDataSet/Mobile cellular subscriptions (per 100 people).csv')
-dataMort = pd.read_csv('../gdp-analysis/rawDataSet/Mortality rate, infant (per 1,000 live births).csv')
-dataCrop = pd.read_csv('../gdp-analysis/rawDataSet/Permanent cropland (% of land area).csv')
-dataPopDen = pd.read_csv('../gdp-analysis/rawDataSet/Population density (people per sq. km of land area).csv')
-dataPop = pd.read_csv('../gdp-analysis/rawDataSet/Population, total.csv')
-dataServ = pd.read_csv('../gdp-analysis/rawDataSet/Services, value added (% of GDP).csv')
-dataArea = pd.read_csv('../gdp-analysis/rawDataSet/Surface area (sq. km).csv')
-
-# # print(dataGDP)
-# rowGDP = dataGDP.loc[dataGDP['Country Name'] == userSelection]
-# print(rowGDP.T)
+dataGDP = pd.read_csv('../SampleGDPAnalysis/rawDataSet/GDP (current USD).csv')
+dataAgri = pd.read_csv('../SampleGDPAnalysis/rawDataSet/Agriculture, forestry, and fishing, value added (% of GDP).csv')
+dataArab = pd.read_csv('../SampleGDPAnalysis/rawDataSet/Arable land (% of land area).csv')
+dataBirth = pd.read_csv('../SampleGDPAnalysis/rawDataSet/Birth rate, crude (per 1,000 people).csv')
+dataDeath = pd.read_csv('../SampleGDPAnalysis/rawDataSet/Death rate, crude (per 1,000 people).csv')
+dataIndiv = pd.read_csv('../SampleGDPAnalysis/rawDataSet/Individuals using the Internet (% of population).csv')
+dataIndus = pd.read_csv('../SampleGDPAnalysis/rawDataSet/Industry (including construction), value added (% of GDP).csv')
+dataMobile = pd.read_csv('../SampleGDPAnalysis/rawDataSet/Mobile cellular subscriptions (per 100 people).csv')
+dataMort = pd.read_csv('../SampleGDPAnalysis/rawDataSet/Mortality rate, infant (per 1,000 live births).csv')
+dataCrop = pd.read_csv('../SampleGDPAnalysis/rawDataSet/Permanent cropland (% of land area).csv')
+dataPopDen = pd.read_csv('../SampleGDPAnalysis/rawDataSet/Population density (people per sq. km of land area).csv')
+dataPop = pd.read_csv('../SampleGDPAnalysis/rawDataSet/Population, total.csv')
+dataServ = pd.read_csv('../SampleGDPAnalysis/rawDataSet/Services, value added (% of GDP).csv')
+dataArea = pd.read_csv('../SampleGDPAnalysis/rawDataSet/Surface area (sq. km).csv')
 
 #Selecting row based on country selected
 rowGDP = dataGDP.loc[dataGDP['Country Name'] == userSelection]
@@ -84,4 +80,36 @@ df = df.replace('..', np.nan).dropna()
 df = df.replace('...', np.nan).dropna()
 df = df.dropna()
 df = pd.DataFrame(df, dtype=float)
-print(df)
+
+# Linear Regression to predict GDP values
+Y = df.iloc[:, 0].values.reshape(-1, 1)
+X = df.index.values.reshape(-1, 1)
+lr = LinearRegression()
+lr.fit(X, Y)
+y_pred = lr.predict(X)
+plt.scatter(X, Y, s=10)
+plt.plot(X, y_pred, color='red')
+plt.title(userSelection + ' - GDP (Simple Linear Regression Model)') # Better Graph Title
+plt.xlabel('Years')
+plt.ylabel('GDP Per Capita (Constant LCU)')
+plt.show()
+print(lr.predict([[2050]]))
+
+# Heatmap to see general pattern in dataset
+plt.figure(figsize=(12, 12))
+sns.heatmap(data=df.iloc[:, 0:].corr(), annot=True, fmt='.2f', cmap='coolwarm')
+plt.show()
+
+# Showing Linear Regression Mathematical Scores (?)
+linReg = LinearRegression(normalize=True)
+linReg.fit(X, Y)
+print(linReg.score(X, Y))
+print(linReg.coef_)
+print(linReg.intercept_)
+
+# Select a GDP Factor
+inputFactor = 'GDP'
+print(df[inputFactor])
+
+# # Exporting all datasets for country
+# df.to_csv(r'../SampleGDPAnalysis/Singapore.csv', index=True)
