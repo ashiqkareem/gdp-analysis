@@ -17,3 +17,22 @@ dataPop = pd.read_excel(path + 'SAMPLE - Population, total.xlsx')
 dataServ = pd.read_excel(path + 'SAMPLE - Services, value added (% of GDP).xlsx')
 dataArea = pd.read_excel(path + 'SAMPLE - Surface area (sq. km).xlsx')
 
+
+# Store files in list to select the files to show based on user input
+file_selection = []
+file_selection.append(dataGDP)
+file_selection.append(dataAgri)
+file_selection.append(dataArab)
+file_selection.append(dataBirth)
+file_selection.append(dataDeath)
+file_selection.append(dataIndiv)
+file_selection.append(dataIndus)
+file_selection.append(dataMobile)
+file_selection.append(dataMort)
+file_selection.append(dataCrop)
+file_selection.append(dataPopDen)
+file_selection.append(dataPop)
+file_selection.append(dataServ)
+file_selection.append(dataArea)
+
+

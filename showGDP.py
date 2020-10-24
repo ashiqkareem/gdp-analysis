@@ -14,17 +14,30 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_squared_log_error
 from data import *
 
-userSelection = 1960
+# User input
+user_year = 1960
+user_factor ="Agriculture, forestry, and fishing, value added (% of GDP)"
+
+
+# Intalize varablies and GDP dataframe
+num = 10
 df = pd.DataFrame(dataGDP)
+
+
+# Create data frame base on factor user selected
+def file_to_execute(file_to_show):
+    for file in file_selection:
+        if file["Series Name"][0] == file_to_show:
+            df_2 = pd.DataFrame(file)
+    return df_2
 
 
 # Setting the basic style for plots
 def plot_design(title):
-    plt.style.use('ggplot')
     plt.title(title)
-    plt.legend()
     plt.xlabel("GPD")
     plt.ylabel("Countries")
+    plt.style.use('ggplot')
     plt.show()
 
 
@@ -36,26 +49,23 @@ def display_all(user_input):
 
 def display_top_gpd(user_input):
     df.sort_values(by=[user_input, "Country Name"], inplace=True)
-    plt.barh(df['Country Name'][-5:], df[user_input][-5:])
+    plt.barh(df['Country Name'][-num:], df[user_input][-num:])
     plot_design("GPD Of Top Countries")
 
 
 def display_btm_gpd(user_input):
     df.sort_values(by=[user_input, "Country Name"], inplace=True)
-    plt.barh(df['Country Name'][:5], df[user_input][:5])
+    plt.barh(df['Country Name'][:num], df[user_input][:num])
     plot_design("GPD Of Bottom Countries")
 
 
-# Still trying
-def display_top_factors(user_input):
-    """
-    Concate the dataframe
-    Get all factors
-    Find the factor that affected the GPD the most in a specific year
-    Display the top N country with the factors
-    """
+def display_top_factors(user_input, factor_input):
+    x = file_to_execute(user_factor)
+    x.sort_values(by=[user_input, "Country Name"], inplace=True)
+    plt.barh(x['Country Name'][:num], x[user_input][:num])
+    plot_design(factor_input)
 
-# display_all(userSelection)
-# display_top_gpd(userSelection)
-# display_btm_gpd(userSelection)
-# display_top_factors(userSelection)
+# display_all(user_year)
+# display_top_gpd(user_year)
+# display_btm_gpd(user_year)
+# display_top_factors(user_year,user_factor)
