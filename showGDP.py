@@ -62,7 +62,7 @@ def display_btm_gpd(user_input):
 def display_specific_factor(user_input, factor_input):
     x = file_to_execute(user_factor)
     x.sort_values(by=[user_input, "Country Name"], inplace=True)
-    plt.barh(x['Country Name'][:num], x[user_input][:num])
+    plt.barh(x['Country Name'][-num:], x[user_input][-num:])
     plot_design(factor_input)
 
 # display_all(user_year)
