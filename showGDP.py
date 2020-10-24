@@ -19,7 +19,7 @@ user_year = 1960
 user_factor ="Agriculture, forestry, and fishing, value added (% of GDP)"
 
 
-# Intalize varablies and GDP dataframe
+# Declare var and GDP dataframe
 num = 10
 df = pd.DataFrame(dataGDP)
 
@@ -59,7 +59,7 @@ def display_btm_gpd(user_input):
     plot_design("GPD Of Bottom Countries")
 
 
-def display_top_factors(user_input, factor_input):
+def display_specific_factor(user_input, factor_input):
     x = file_to_execute(user_factor)
     x.sort_values(by=[user_input, "Country Name"], inplace=True)
     plt.barh(x['Country Name'][:num], x[user_input][:num])
@@ -68,4 +68,4 @@ def display_top_factors(user_input, factor_input):
 # display_all(user_year)
 # display_top_gpd(user_year)
 # display_btm_gpd(user_year)
-# display_top_factors(user_year,user_factor)
+# display_specific_factor(user_year,user_factor)
