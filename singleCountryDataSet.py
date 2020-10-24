@@ -1,9 +1,14 @@
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from tkinter import *
+from tkinter import ttk
+import tkinter as tk
+import tkinter as tkMessageBox
+from pandastable import Table
+from pandastable import config
+from pandastable import IndexHeader
 from matplotlib import pyplot as plt
-import xlsxwriter
-import os
 # from sklearn.preprocessing import LabelEncoder
 # from sklearn.model_selection import train_test_split
 # from sklearn.linear_model import LinearRegression
@@ -11,6 +16,10 @@ import os
 # from sklearn.ensemble import RandomForestRegressor
 # from sklearn.metrics import mean_squared_error, mean_squared_log_error
 from matplotlib.pyplot import table
+
+def countrySelect(country):
+    return country
+
 
 userSelection = 'Singapore'
 
@@ -87,7 +96,7 @@ Bot3CorrDict = sorted(corrDict.items(), key=lambda x: x[1], reverse=True)[-3:]
 
 
 
-# Making of Top 3 line graph
+# Display GDP Factor graph
 def displayFactorsGraph():
     plt.figure("GDP Factors")
     plt.suptitle("%s GDP Factors" %userSelection)
@@ -97,8 +106,21 @@ def displayFactorsGraph():
     plt.tight_layout()
     plt.show()
 
-# Making of Bottom 3 line graph
+def displayCorrTable():
+    df = pd.DataFrame(data=corrDict, index=[0]).T
+    df.columns = ['Correlation Value']
+    window = tk.Tk()
+    window.title('%s GDP Factors correlation values' % userSelection)
+    f = Frame(window)
+    f.pack(fill=BOTH, expand=1)
+    pt = Table(f, dataframe=df, showstatusbar=True, width=200, height=300)
+    options = {'cellwidth': 150, 'floatprecision': 4, 'align': 'center'}
+    config.apply_options(options, pt)
+    pt.showIndex()
+    pt.show()
 
+''' 
+#Display and save in to excel. Function not used.
 def displayCorrExcel():
     corrDF = pd.DataFrame(data=corrDict, index=[0])
     corrDF.index = ['Correlation Value']
@@ -106,7 +128,8 @@ def displayCorrExcel():
     corrDF.to_excel('%s correlation values of GDP Factors.xlsx'%userSelection)
 
 
-def displayCorrTable():
+#Display table using Matplotlib. Function not used.
+def displayCorrTablePlot():
     plt.figure("GDP Factors correlation values")
     df = pd.DataFrame(data=corrDict, index=[0]).T
     df.columns = ['Correlation Value']
@@ -120,6 +143,11 @@ def displayCorrTable():
     plt.axis("off")
     plt.grid(False)
     plt.show()
+'''
+
 
 
 displayCorrTable()
+
+
+mainloop()
