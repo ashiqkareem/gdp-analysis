@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
+import tkinter as tk
+from tkinter import *
 import xlsxwriter
 import os
 from sklearn.preprocessing import LabelEncoder
@@ -12,6 +14,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_squared_log_error
+from pandastable import Table
+from pandastable import config
 
 userSelection = 'China'
 
@@ -83,6 +87,46 @@ def dataframeCreation(singleCountry):
     df = pd.DataFrame(df, dtype=float)
 
     return df
+
+# Correlation value of GDP vs factor (requires a for loop implementation)
+def corrDict(dataframe):
+    df = dataframe
+    corrDict = {}
+    for i in range(1, len(df.columns)):
+         col1 = df['GDP']
+         col2 = df[df.columns[i]]
+         correlation = col1.corr(col2)
+         corrDict[df.columns[i]] = correlation
+
+    GDPCorrDict = sorted(corrDict.items(), key=lambda x: x[1], reverse=True)
+
+    return GDPCorrDict
+
+
+# Display GDP Factor graph
+def displayFactorsGraph(dict):
+    GDPCorrDict = dict
+    plt.figure("GDP Factors")
+    plt.suptitle("%s GDP Factors")
+    for i in range(len(GDPCorrDict)):
+        plt.subplot(5, 3, i + 1)
+        sns.lineplot(x=GDPCorrDict[i][0], y='GDP', data=df)
+    plt.tight_layout()
+    plt.show()
+
+def displayCorrTable(dict):
+    GDPCorrDict = dict
+    df = pd.DataFrame(data=GDPCorrDict, index=[0]).T
+    df.columns = ['Correlation Value']
+    window = tk.Tk()
+    window.title('%s GDP Factors correlation values' % userSelection)
+    f = Frame(window)
+    f.pack(fill=BOTH, expand=1)
+    pt = Table(f, dataframe=df, showstatusbar=True, width=200, height=300)
+    options = {'cellwidth': 150, 'floatprecision': 4, 'align': 'center'}
+    config.apply_options(options, pt)
+    pt.showIndex()
+    pt.show()
 
 # Linear Regression to predict GDP values
 def linearReg(dataframe):
