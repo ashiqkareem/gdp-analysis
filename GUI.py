@@ -313,6 +313,7 @@ actCmbT2.current(0)
 actCmbT2.grid(column=2, row=1)
 
 def countryAct():
+    '''Link country to action button'''
     if actCmbT2.get() == "List correlation values of GDP factors":
         print(actCmbT2.get(), countryCmbT2.get())
     elif actCmbT2.get() == "Display GDP factors in graphs":
@@ -357,6 +358,7 @@ facCmbT2.current(0)
 facCmbT2.grid(column=2, row=4)
 
 def gdpFac():
+    '''Link country to GDP factor button'''
     if facCmbT2.get() == "Agriculture, forestry, and fishing, value added (% of GDP)":
         print(facCmbT2.get(), country2CmbT2.get())
     elif facCmbT2.get() == "Arable land (% of land area)":
@@ -399,6 +401,7 @@ seperatorT3.grid(column=0, row=0, padx=15, pady=30)
 yearLblT3 = Label(frameT3, text="Select a year:", bg="lightblue")
 yearLblT3.grid(column=1, row=0, sticky="w")
 
+# Create list of years for combo box
 yearList = []
 year = 1960
 while year <= 2020:
@@ -421,6 +424,7 @@ actCmbT3.current(0)
 actCmbT3.grid(column=2, row=1)
 
 def yearAct():
+    '''Link year to action button'''
     if actCmbT3.get() == "List GDP of all countries":
         print(actCmbT3.get(), yearCmbT3.get())
     elif actCmbT2.get() == "Display GDP of top 10 countries in bar graphs":
@@ -453,6 +457,7 @@ facCmbT3.current(0)
 facCmbT3.grid(column=2, row=2)
 
 def yearFac():
+    '''Link year to gdp factor button'''
     if facCmbT3.get() == "Agriculture, forestry, and fishing, value added (% of GDP)":
         print(facCmbT3.get(), yearCmbT3.get())
     elif facCmbT3.get() == "Arable land (% of land area)":
@@ -492,6 +497,7 @@ preYearLblT3 = Label(
     frameT3, text="Select year of prediction:", bg="lightblue")
 preYearLblT3.grid(column=1, row=4, sticky="w")
 
+# Create list of prediction years for combo box
 preYearList = []
 preYear = 2021
 while preYear <= 2099:
@@ -514,6 +520,7 @@ act2CmbT3.current(0)
 act2CmbT3.grid(column=2, row=5)
 
 def preYearAct():
+    '''Link prediction year to action button'''
     if act2CmbT3.get() == "List GDP of all countries":
         print(act2CmbT3.get(), preYearCmbT3.get())
     elif act2CmbT3.get() == "Display GDP of top 10 countries in bar graphs":
