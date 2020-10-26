@@ -4,6 +4,8 @@ from tkinter import *
 from tkintertable import TableCanvas, TableModel
 from singleCountryDataSet import *
 from dataCleaning import *
+from pandastable import Table
+from pandastable import config
 
 def importMsg():
     if True:
@@ -314,12 +316,14 @@ actCmbT2["values"] = ("List correlation values of GDP factors",
 actCmbT2.current(0)
 actCmbT2.grid(column=2, row=1)
 
+# displayCorrTable(dict(dataframeCreation("China")))
+
 def countryAct():
     '''Link country to action button'''
     if actCmbT2.get() == "List correlation values of GDP factors":
-        print(actCmbT2.get(), countryCmbT2.get())
+        displayCorrTable(dict(dataframeCreation(countryCmbT2.get())),countryCmbT2.get())
     elif actCmbT2.get() == "Display GDP factors in graphs":
-        print(actCmbT2.get(), countryCmbT2.get())
+        displayFactorsGraph(corrGDPDict(dataframeCreation(countryCmbT2.get())),dataframeCreation(countryCmbT2.get()))
     else:
         print(actCmbT2.get(), countryCmbT2.get())
 

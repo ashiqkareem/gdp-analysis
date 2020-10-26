@@ -17,10 +17,8 @@ from sklearn.metrics import mean_squared_error, mean_squared_log_error
 from pandastable import Table
 from pandastable import config
 
-userSelection = 'China'
-
 # Function that creates a dataframe for the selected country
-def dataframeCreation(singleCountry):
+def dataframeCreation(userSelection):
     dataGDP = pd.read_csv('../gdp-analysis/rawDataSet/GDP (current USD).csv')
     dataAgri = pd.read_csv('../gdp-analysis/rawDataSet/Agriculture, forestry, and fishing, value added (% of GDP).csv')
     dataArab = pd.read_csv('../gdp-analysis/rawDataSet/Arable land (% of land area).csv')
@@ -92,7 +90,7 @@ def dataframeCreation(singleCountry):
     return df
 
 # Correlation value of GDP vs factor (requires a for loop implementation)
-def corrDict(dataframe):
+def corrGDPDict(dataframe):
     df = dataframe
     corrDict = {}
     for i in range(1, len(df.columns)):
@@ -105,24 +103,41 @@ def corrDict(dataframe):
 
     return GDPCorrDict
 
+#Correlation Dictionary
+def dict(dataframe):
+    df = dataframe
+    corrDict = {}
+    for i in range(1, len(df.columns)):
+         col1 = df['GDP']
+         col2 = df[df.columns[i]]
+         correlation = col1.corr(col2)
+         corrDict[df.columns[i]] = correlation
+
+    
+    print(corrDict)
+    return corrDict
+
 
 # Display GDP Factor graph
-def displayFactorsGraph(dict):
+def displayFactorsGraph(dict, dataframe):
     GDPCorrDict = dict
-    plt.figure("GDP Factors")
-    plt.suptitle("%s GDP Factors")
+    df = dataframe
+    plt.figure("GDP Factors", figsize=(12,6))
+    plt.suptitle("GDP Factors")
     for i in range(len(GDPCorrDict)):
         plt.subplot(5, 3, i + 1)
         sns.lineplot(x=GDPCorrDict[i][0], y='GDP', data=df)
     plt.tight_layout()
     plt.show()
 
-def displayCorrTable(dict):
-    GDPCorrDict = dict
-    df = pd.DataFrame(data=GDPCorrDict, index=[0]).T
+
+# Display Correlation Table
+def displayCorrTable(dict,userSelection):
+    corrDict = dict
+    df = pd.DataFrame(data=corrDict, index=[0]).T
     df.columns = ['Correlation Value']
-    window = tk.Tk()
-    window.title('%s GDP Factors correlation values' % userSelection)
+    window = tk.Toplevel()
+    window.title('%s - GDP Factors correlation values' % userSelection)
     f = Frame(window)
     f.pack(fill=BOTH, expand=1)
     pt = Table(f, dataframe=df, showstatusbar=True, width=200, height=300)
@@ -165,9 +180,10 @@ def displayFactor(dataframe,factor):
     inputFactor = factor
     print(df[inputFactor])
 
-print(displayFactor(dataframeCreation("Singapore"),"GDP"))
-
 # Exporting all datasets for country
 def exportCSV(dataframe, country):
     df = dataframe
     df.to_csv(r'../gdp-analysis/output/'+country+'.csv', index=True)
+
+# displayCorrTable(dict(dataframeCreation("China")))
+# mainloop()
