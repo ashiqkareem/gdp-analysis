@@ -122,6 +122,3 @@ def displayFactor(dataframe):
 def exportCSV(dataframe):
     df = dataframe
     df.to_csv(r'../SampleGDPAnalysis/Singapore.csv', index=True)
-
-print(linearReg(dataframeCreation("China")))
-print(displayFactor(dataframeCreation("Mexico")))
