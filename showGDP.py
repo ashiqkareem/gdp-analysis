@@ -24,8 +24,6 @@ def clean_dataframe(frame):
     frame.columns = frame.columns.str.replace(r"\[.*?\]", "")  # Remove Brackets
     frame.rename(columns=lambda x: x.strip(), inplace=True)  # Strip the spaces
     frame = frame.dropna()
-    # frame = frame.replace('..', np.nan).dropna()
-    # frame = frame.replace('...', np.nan).dropna()
     return frame
 
 
@@ -57,6 +55,7 @@ def plot_design(title):
     plt.style.use('ggplot')
     plt.xlabel("GPD")
     plt.ylabel("Countries")
+    plt.tight_layout()
     plt.show()
 
 
@@ -93,5 +92,3 @@ def display_specific_factor(user_input, factor_input):
 # display_btm_gpd(user_year)
 # display_specific_factor(user_year,user_factor)
 
-
-# file_to_execute(user_factor)
