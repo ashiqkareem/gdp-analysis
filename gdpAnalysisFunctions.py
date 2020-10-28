@@ -201,4 +201,16 @@ def linearReg(countryInput, yearInput, dataframe):
     print(countryInput, lr.predict([[yearInput]]))
 
 
+# Tab 2 - Function that allows user to view factor specific data
+def displayFactor(dataframe,factor):
+    df = dataframe
+    inputFactor = factor
+    print(df[inputFactor])
+
+
+# Tab 2 - Function that allows users to export all datasets for country
+def exportCSV(dataframe, country):
+    df = dataframe
+    df.to_csv(r'../gdp-analysis/output/'+country+'.csv', index=True)
+
 # Checking whether functions work here
