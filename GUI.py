@@ -2,8 +2,7 @@ import tkinter
 from tkinter import ttk
 from tkinter import *
 from tkintertable import TableCanvas, TableModel
-from singleCountryDataSet import *
-from dataCleaning import *
+from gdpAnalysisFunctions import *
 from pandastable import Table
 from pandastable import config
 from showGDP import *
@@ -313,8 +312,10 @@ actLblT2.grid(column=1, row=1, sticky="w")
 
 actCmbT2 = ttk.Combobox(frameT2, width=62, state="readonly")
 actCmbT2["values"] = ("List correlation values of GDP factors",
+                      "Display correlations values in heat map",
                       "Display GDP factors in graphs",
-                      "Predict GDP in graphs")
+                      "Display simple linear regression graphs (GDP VS Factors)",
+                      "Display best fit line of GDP")
 actCmbT2.current(0)
 actCmbT2.grid(column=2, row=1)
 
@@ -322,13 +323,15 @@ actCmbT2.grid(column=2, row=1)
 def countryAct():
     '''Link country to action button'''
     if actCmbT2.get() == "List correlation values of GDP factors":
-        displayCorrTable(dict(dataframeCreation(
-            countryCmbT2.get())), countryCmbT2.get())
+        displayCorrTable(dict(dataframeCreation(countryCmbT2.get())), countryCmbT2.get())
+    elif actCmbT2.get() == "Display correlations values in heat map":
+        heatMap(dataframeCreation(countryCmbT2.get()))
     elif actCmbT2.get() == "Display GDP factors in graphs":
-        displayFactorsGraph(corrGDPDict(dataframeCreation(
-            countryCmbT2.get())), dataframeCreation(countryCmbT2.get()))
+        displayFactorsGraph(corrGDPDict(dataframeCreation(countryCmbT2.get())), dataframeCreation(countryCmbT2.get()))
+    elif actCmbT2.get() == "Display simple linear regression graphs (GDP VS Factors)":
+        displayLinearRegFactor(dataframeCreation(countryCmbT2.get()))
     else:
-        print(actCmbT2.get(), countryCmbT2.get())
+        linearReg(countryCmbT2, dataframeCreation(countryCmbT2.get()))
 
 
 actBtnT2 = Button(frameT2, text="Generate", width=15, command=countryAct)
@@ -361,9 +364,9 @@ facCmbT2.grid(column=2, row=1)
 def gdpFac():
     '''Link country to GDP factor button'''
     if facCmbT2.get() == "GDP (current USD)":
-        displayFactor(dataframeCreation(country2CmbT2.get()), "GDP")
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "GDP")
     elif facCmbT2.get() == "Agriculture, forestry, and fishing, value added (% of GDP)":
-        displayFactor(dataframeCreation(country2CmbT2.get()), "Agriculture")
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Agriculture")
     elif facCmbT2.get() == "Arable land (% of land area)":
         displayFactor(dataframeCreation(country2CmbT2.get()), "Arable Land")
     elif facCmbT2.get() == "Birth rate, crude (per 1,000 people)":

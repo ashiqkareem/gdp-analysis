@@ -20,7 +20,7 @@ from pandastable import config
 # Function that creates a dataframe for the selected country
 def dataframeCreation(singleCountry):
     # Pathways to various datasets used
-    dataGDP = pd.read_csv('..gdp-analysis/rawDataSet/GDP, PPP (current international $).csv')
+    dataGDP = pd.read_csv('../gdp-analysis/rawDataSet/GDP (current USD).csv')
     dataAgri = pd.read_csv('../gdp-analysis/rawDataSet/Agriculture, forestry, and fishing, value added (% of GDP).csv')
     dataArab = pd.read_csv('../gdp-analysis/rawDataSet/Arable land (% of land area).csv')
     dataBirth = pd.read_csv('../gdp-analysis/rawDataSet/Birth rate, crude (per 1,000 people).csv')
@@ -185,7 +185,7 @@ def displayLinearRegFactor(dataframe):
 
 
 # Tab 2 - Function that predicts the GDP value of a country/countries
-def linearReg(countryInput, yearInput, dataframe):
+def linearReg(countryInput, dataframe):
     df = dataframe
     X = df.index.values.reshape(-1, 1)
     Y = df['GDP'].values.reshape(-1, 1)
@@ -194,11 +194,11 @@ def linearReg(countryInput, yearInput, dataframe):
     y_pred = lr.predict(X)
     plt.scatter(X, Y, s=10)
     plt.plot(X, y_pred, color='red')
-    plt.title(countryInput + "'s Best Fit Line") # Better Graph Title
+    # plt.title(countryInput + "'s Best Fit Line") # Better Graph Title
     plt.xlabel('Years')
     plt.ylabel('GDP Per Capita (Constant LCU)')
     plt.show()
-    print(countryInput, lr.predict([[yearInput]]))
+    # print(countryInput, lr.predict([[yearInput]]))
 
 
 # Tab 2 - Function that allows user to view factor specific data
@@ -208,8 +208,7 @@ def displayFactor(country, dataframe, factor):
     dfGDP = df['GDP']
     dfFactor = df[factor]
     df = pd.concat([dfGDP, dfFactor], axis=1)
-    print(df)
-    window = tk.Tk()
+    window = tk.Toplevel()
     window.title(countryName + "'s " + factor + ' Data')
     f = Frame(window)
     f.pack(fill=BOTH, expand=1)
