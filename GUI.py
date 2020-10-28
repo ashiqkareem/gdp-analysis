@@ -235,7 +235,7 @@ allCountries = ["Afghanistan",
                 "Zimbabwe"
                 ]
 
-gdpFactorsList = ["GDP (current USD)",
+gdpFactorsList = ["GDP, PPP (current international $)",
                   "Agriculture, forestry, and fishing, value added (% of GDP)",
                   "Arable land (% of land area)",
                   "Birth rate, crude (per 1,000 people)",
@@ -265,11 +265,11 @@ tabList.add(tab2, text="Single Country")
 tabList.add(tab3, text="All Countries")
 tabList.pack(expand=1, fill="both")
 
-# Create tab1 frames
+# Create tab 1 frames
 frameT1 = Frame(tab1, width=700, height=400, bg="lightblue")
 frameT1.grid(columnspan=3, row=0)
 
-# Create tab2 frames
+# Create tab 2 frames
 frameT2 = Frame(tab2, width=700, height=150, bg="lightblue")
 frameT2.grid(columnspan=3, row=0)
 frame2T2 = Frame(tab2, width=700, height=100, bg="lightblue")
@@ -277,11 +277,15 @@ frame2T2.grid(columnspan=3, row=1)
 frame3T2 = Frame(tab2, width=700, height=150, bg="lightblue")
 frame3T2.grid(columnspan=3, row=2)
 
-# Create tab3 frames
-frameT3 = Frame(tab3, width=700, height=400, bg="lightblue")
+# Create tab 3 frames
+frameT3 = Frame(tab3, width=700, height=50, bg="lightblue")
 frameT3.grid(columnspan=3, row=0)
+frame2T3 = Frame(tab3, width=700, height=200, bg="lightblue")
+frame2T3.grid(columnspan=3, row=1)
+frame3T3 = Frame(tab3, width=700, height=150, bg="lightblue")
+frame3T3.grid(columnspan=3, row=2)
 
-# tab1 frame elements
+# Tab 1 frame elements
 dwlimpLblT1 = Label(frameT1, text="Download/Import Data Sets", bg="lightblue")
 dwlimpLblT1.grid(column=0, row=0, padx=30, pady=35, sticky="w")
 
@@ -295,7 +299,7 @@ impBtnT1.grid(column=0, row=2, padx=30, pady=55, sticky="w")
 msgLblT1 = Label(frameT1, text="", bg="lightblue", width=90)
 msgLblT1.grid(column=0, row=3, padx=30, sticky="w")
 
-# tab2 frames elements
+# Tab 2 frames elements
 seperatorT2 = ttk.Separator(frameT2, orient=HORIZONTAL)
 seperatorT2.grid(column=0, row=0, padx=15, pady=40)
 
@@ -363,43 +367,43 @@ facCmbT2.grid(column=2, row=1)
 
 def gdpFac():
     '''Link country to GDP factor button'''
-    if facCmbT2.get() == "GDP (current USD)":
+    if facCmbT2.get() == "GDP, PPP (current international $)":
         displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "GDP")
     elif facCmbT2.get() == "Agriculture, forestry, and fishing, value added (% of GDP)":
         displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Agriculture")
     elif facCmbT2.get() == "Arable land (% of land area)":
-        displayFactor(dataframeCreation(country2CmbT2.get()), "Arable Land")
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Arable Land")
     elif facCmbT2.get() == "Birth rate, crude (per 1,000 people)":
-        displayFactor(dataframeCreation(country2CmbT2.get()), "Birth Rate")
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Birth Rate")
     elif facCmbT2.get() == "Death rate, crude (per 1,000 people)":
-        displayFactor(dataframeCreation(country2CmbT2.get()), "Death Rate")
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Death Rate")
     elif facCmbT2.get() == "Individuals using the Internet (% of population)":
-        displayFactor(dataframeCreation(country2CmbT2.get()), "Individuals using Internet")
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Individuals using Internet")
     elif facCmbT2.get() == "Industry (including construction), value added (% of GDP)":
-        displayFactor(dataframeCreation(country2CmbT2.get()), "Industry")
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Industry")
     elif facCmbT2.get() == "Literacy rate, adult total (% of people ages 15 and above)":
-        displayFactor(dataframeCreation(country2CmbT2.get()), "Literacy")
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Literacy")
     elif facCmbT2.get() == "Mobile cellular subscriptions (per 100 people)":
-        displayFactor(dataframeCreation(country2CmbT2.get()), "Mobile Subscriptions")
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Mobile Subscriptions")
     elif facCmbT2.get() == "Mortality rate, infant (per 1,000 live births)":
-        displayFactor(dataframeCreation(country2CmbT2.get()), "Mortality Rate")
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Mortality Rate")
     elif facCmbT2.get() == "Permanent cropland (% of land area)":
-        displayFactor(dataframeCreation(country2CmbT2.get()), "Cropland")
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Cropland")
     elif facCmbT2.get() == "Population density (people per sq. km of land area)":
-        displayFactor(dataframeCreation(country2CmbT2.get()), "Population Density")
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Population Density")
     elif facCmbT2.get() == "Population, total":
-        displayFactor(dataframeCreation(country2CmbT2.get()), "Population")
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Population")
     elif facCmbT2.get() == "Services, value added (% of GDP)":
-        displayFactor(dataframeCreation(country2CmbT2.get()), "Services")
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Services")
     else:
-        displayFactor(dataframeCreation(country2CmbT2.get()), "Surface Area")
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Surface Area")
 
 facBtnT2 = Button(frame3T2, text="Generate", width=15, command=gdpFac)
 facBtnT2.grid(column=3, row=1, padx=20, sticky="w")
 
-# tab3 frame elements
+# Tab 3 frame elements
 seperatorT3 = ttk.Separator(frameT3, orient=HORIZONTAL)
-seperatorT3.grid(column=0, row=0, padx=15, pady=30)
+seperatorT3.grid(column=0, row=0, padx=45, pady=30)
 
 yearLblT3 = Label(frameT3, text="Select a year:", bg="lightblue")
 yearLblT3.grid(column=1, row=0, sticky="w")
@@ -416,27 +420,26 @@ yearCmbT3["values"] = (yearList)
 yearCmbT3.current(0)
 yearCmbT3.grid(column=2, row=0)
 
-facLblT3 = Label(frameT3, text="Select a GDP factor:", bg="lightblue")
-facLblT3.grid(column=1, row=1, pady=30, sticky="w")
+facLblT3 = Label(frame2T3, text="Select a GDP factor", bg="lightblue")
+facLblT3.grid(column=0, row=0, padx=130, pady=30)
 
-facCmbT3 = ttk.Combobox(frameT3, width=62, state="readonly")
+facCmbT3 = ttk.Combobox(frame2T3, width=50, state="readonly")
 facCmbT3["values"] = gdpFactorsList
 facCmbT3.current(0)
-facCmbT3.grid(column=2, row=1)
+facCmbT3.grid(column=0, row=1)
 
-facBtnT3 = Button(frameT3, text="Generate", width=15,
-                  command=lambda: display_specific_factor(yearCmbT3.get(), facCmbT3.get()))
-facBtnT3.grid(column=3, row=1, padx=10, sticky="w")
+facBtnT3 = Button(frame2T3, text="Generate", width=45, command=lambda: display_specific_factor(yearCmbT3.get(), facCmbT3.get()))
+facBtnT3.grid(column=0, row=2, pady=20)
 
-actLblT3 = Label(frameT3, text="Select an action:", bg="lightblue")
-actLblT3.grid(column=1, row=2, pady=10, sticky="w")
+actLblT3 = Label(frame2T3, text="Select an action:", bg="lightblue")
+actLblT3.grid(column=1, row=0, padx=100)
 
-actCmbT3 = ttk.Combobox(frameT3, width=62, state="readonly")
+actCmbT3 = ttk.Combobox(frame2T3, width=50, state="readonly")
 actCmbT3["values"] = ("List GDP of all countries",
                       "Display GDP of top 10 countries in bar graphs",
                       "Display GDP of bottom 10 countries in bar graphs")
 actCmbT3.current(0)
-actCmbT3.grid(column=2, row=2)
+actCmbT3.grid(column=1, row=1)
 
 def yearAct():
     '''Link year to action button'''
@@ -447,15 +450,14 @@ def yearAct():
     else:
         display_btm_gpd(yearCmbT3.get())
 
-actBtnT3 = Button(frameT3, text="Generate", width=15, command=yearAct)
-actBtnT3.grid(column=3, row=2, padx=10, sticky="w")
+actBtnT3 = Button(frame2T3, text="Generate", width=45, command=yearAct)
+actBtnT3.grid(column=1, row=2)
 
-seperator2T3 = ttk.Separator(frameT3, orient=VERTICAL)
-seperator2T3.grid(column=1, row=3, padx=15, pady=30)
+seperator2T3 = ttk.Separator(frame3T3, orient=HORIZONTAL)
+seperator2T3.grid(column=0, row=0, padx=15)
 
-preYearLblT3 = Label(
-    frameT3, text="Select year of prediction:", bg="lightblue")
-preYearLblT3.grid(column=1, row=4, sticky="w")
+preYearLblT3 = Label(frame3T3, text="Select year of prediction:", bg="lightblue")
+preYearLblT3.grid(column=1, row=0, sticky="w")
 
 # Create list of prediction years for combo box
 preYearList = []
@@ -464,20 +466,20 @@ while preYear <= 2099:
     preYearList.append(preYear)
     preYear += 1
 
-preYearCmbT3 = ttk.Combobox(frameT3, width=62, state="readonly")
+preYearCmbT3 = ttk.Combobox(frame3T3, width=62, state="readonly")
 preYearCmbT3["values"] = (preYearList)
 preYearCmbT3.current(0)
-preYearCmbT3.grid(column=2, row=4)
+preYearCmbT3.grid(column=2, row=0)
 
-actLbl2T3 = Label(frameT3, text="Select an action:", bg="lightblue")
-actLbl2T3.grid(column=1, row=5, pady=30, sticky="w")
+actLbl2T3 = Label(frame3T3, text="Select an action:", bg="lightblue")
+actLbl2T3.grid(column=1, row=1, pady=30, sticky="w")
 
-act2CmbT3 = ttk.Combobox(frameT3, width=62, state="readonly")
+act2CmbT3 = ttk.Combobox(frame3T3, width=62, state="readonly")
 act2CmbT3["values"] = ("Display GDP of all countries in Year X",
                        "Display top 10 GDP predictions in Year X in bar graphs",
                        "Display bottom 10 GDP predictions in Year X in bar graphs")
 act2CmbT3.current(0)
-act2CmbT3.grid(column=2, row=5)
+act2CmbT3.grid(column=2, row=1)
 
 def preYearAct():
     '''Link prediction year to action button'''
@@ -488,8 +490,8 @@ def preYearAct():
     else:
         print(act2CmbT3.get(), preYearCmbT3.get())
 
-actBtn2T3 = Button(frameT3, text="Generate", width=15, command=preYearAct)
-actBtn2T3.grid(column=3, row=5, padx=10, sticky="w")
+actBtn2T3 = Button(frame3T3, text="Generate", width=15, command=preYearAct)
+actBtn2T3.grid(column=3, row=1, padx=10, sticky="w")
 
 # Apply elements to frames
 frameT1.grid_propagate(0)
@@ -497,6 +499,8 @@ frameT2.grid_propagate(0)
 frame2T2.grid_propagate(0)
 frame3T2.grid_propagate(0)
 frameT3.grid_propagate(0)
+frame2T3.grid_propagate(0)
+frame3T3.grid_propagate(0)
 
 # Size window and disable resize
 window.geometry("700x400")
