@@ -20,7 +20,7 @@ from pandastable import config
 # Function that creates a dataframe for the selected country
 def dataframeCreation(singleCountry):
     # Pathways to various datasets used
-    dataGDP = pd.read_csv('../gdp-analysis/rawDataSet/GDP (current USD).csv')
+    dataGDP = pd.read_csv('../gdp-analysis/rawDataSet/GDP, PPP (current international $).csv')
     dataAgri = pd.read_csv('../gdp-analysis/rawDataSet/Agriculture, forestry, and fishing, value added (% of GDP).csv')
     dataArab = pd.read_csv('../gdp-analysis/rawDataSet/Arable land (% of land area).csv')
     dataBirth = pd.read_csv('../gdp-analysis/rawDataSet/Birth rate, crude (per 1,000 people).csv')
