@@ -3,7 +3,7 @@ import pandas as pd
 
 # Raw DataSet
 path ='../gdp-analysis/rawDataSet/'
-dataGDP = pd.read_csv(path + 'GDP per capita (constant LCU).csv')
+dataGDP = pd.read_csv(path + 'GDP, PPP (current international $).csv')
 dataAgri = pd.read_csv(path + 'Agriculture, forestry, and fishing, value added (% of GDP).csv')
 dataArab = pd.read_csv(path + 'Arable land (% of land area).csv')
 dataBirth = pd.read_csv(path + 'Birth rate, crude (per 1,000 people).csv')
