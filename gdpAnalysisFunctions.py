@@ -202,10 +202,22 @@ def linearReg(countryInput, yearInput, dataframe):
 
 
 # Tab 2 - Function that allows user to view factor specific data
-def displayFactor(dataframe,factor):
+def displayFactor(country, dataframe, factor):
+    countryName = country
     df = dataframe
-    inputFactor = factor
-    print(df[inputFactor])
+    dfGDP = df['GDP']
+    dfFactor = df[factor]
+    df = pd.concat([dfGDP, dfFactor], axis=1)
+    print(df)
+    window = tk.Tk()
+    window.title(countryName + "'s " + factor + ' Data')
+    f = Frame(window)
+    f.pack(fill=BOTH, expand=1)
+    pt = Table(f, dataframe=df, showstatusbar=True, width=200, height=300)
+    options = {'cellwidth': 150, 'floatprecision': 4, 'align': 'center'}
+    config.apply_options(options, pt)
+    pt.showIndex()
+    pt.show()
 
 
 # Tab 2 - Function that allows users to export all datasets for country
