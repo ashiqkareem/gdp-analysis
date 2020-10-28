@@ -26,6 +26,7 @@ num = 10
 df = pd.DataFrame(dataGDP)
 df = clean_dataframe(df)
 
+"""
 # Dropping columns that are not needed after cleaning based on user selection
 for column in df.columns[4:]:
     if column != user_year:
@@ -33,8 +34,9 @@ for column in df.columns[4:]:
 df = df.replace('..', np.nan).dropna()
 df = df.replace('...', np.nan).dropna()
 df.drop(['Series Name', 'Series Code', 'Country Code'], axis=1, inplace=True)
+"""
 
-
+"""
 # Create data frame base on factor user selected
 def file_to_execute(file_to_show):
     for file in file_selection:
@@ -42,6 +44,7 @@ def file_to_execute(file_to_show):
             df_2 = pd.DataFrame(file)
             df_2 = clean_dataframe(df_2)
     return df_2
+"""
 
 
 # Setting the basic style for plots
@@ -84,10 +87,14 @@ def display_btm_gpd(user_input):
 
 # Display top 10 countries of specific factor in specific year
 def display_specific_factor(user_input, factor_input):
-    x = file_to_execute(factor_input)
-    x.sort_values(by=[user_input, "Country Name"], inplace=True)
-    plt.barh(x['Country Name'][-num:], x[user_input][-num:])
-    plot_design(factor_input)
+    # Create data frame base on factor user selected
+    for file in file_selection:
+        if file["Series Name"][0] == factor_input:
+            df_2 = pd.DataFrame(file)
+            df_2 = clean_dataframe(df_2)
+            df_2.sort_values(by=[user_input, "Country Name"], inplace=True)
+            plt.barh(df_2['Country Name'][-num:], df_2[user_input][-num:])
+            plot_design(factor_input)
 
 
 # display_all()
