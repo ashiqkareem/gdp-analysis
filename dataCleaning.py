@@ -19,21 +19,21 @@ from pandastable import config
 
 # Function that creates a dataframe for the selected country
 def dataframeCreation(userSelection):
-    dataGDP = pd.read_csv('../gdp-analysis/rawDataSet/GDP (current USD).csv')
-    dataAgri = pd.read_csv('../gdp-analysis/rawDataSet/Agriculture, forestry, and fishing, value added (% of GDP).csv')
-    dataArab = pd.read_csv('../gdp-analysis/rawDataSet/Arable land (% of land area).csv')
-    dataBirth = pd.read_csv('../gdp-analysis/rawDataSet/Birth rate, crude (per 1,000 people).csv')
-    dataDeath = pd.read_csv('../gdp-analysis/rawDataSet/Death rate, crude (per 1,000 people).csv')
-    dataIndiv = pd.read_csv('../gdp-analysis/rawDataSet/Individuals using the Internet (% of population).csv')
-    dataLit = pd.read_csv('../gdp-analysis/rawDataSet/Literacy rate, adult total (% of people ages 15 and above).csv')
-    dataIndus = pd.read_csv('../gdp-analysis/rawDataSet/Industry (including construction), value added (% of GDP).csv')
-    dataMobile = pd.read_csv('../gdp-analysis/rawDataSet/Mobile cellular subscriptions (per 100 people).csv')
-    dataMort = pd.read_csv('../gdp-analysis/rawDataSet/Mortality rate, infant (per 1,000 live births).csv')
-    dataCrop = pd.read_csv('../gdp-analysis/rawDataSet/Permanent cropland (% of land area).csv')
-    dataPopDen = pd.read_csv('../gdp-analysis/rawDataSet/Population density (people per sq. km of land area).csv')
-    dataPop = pd.read_csv('../gdp-analysis/rawDataSet/Population, total.csv')
-    dataServ = pd.read_csv('../gdp-analysis/rawDataSet/Services, value added (% of GDP).csv')
-    dataArea = pd.read_csv('../gdp-analysis/rawDataSet/Surface area (sq. km).csv')
+    dataGDP = pd.read_csv('D:/Git/1002 VS/gdp-analysis/rawDataSet/GDP (current USD).csv')
+    dataAgri = pd.read_csv('D:/Git/1002 VS/gdp-analysis/rawDataSet/Agriculture, forestry, and fishing, value added (% of GDP).csv')
+    dataArab = pd.read_csv('D:/Git/1002 VS/gdp-analysis/rawDataSet/Arable land (% of land area).csv')
+    dataBirth = pd.read_csv('D:/Git/1002 VS/gdp-analysis/rawDataSet/Birth rate, crude (per 1,000 people).csv')
+    dataDeath = pd.read_csv('D:/Git/1002 VS/gdp-analysis/rawDataSet/Death rate, crude (per 1,000 people).csv')
+    dataIndiv = pd.read_csv('D:/Git/1002 VS/gdp-analysis/rawDataSet/Individuals using the Internet (% of population).csv')
+    dataLit = pd.read_csv('D:/Git/1002 VS/gdp-analysis/rawDataSet/Literacy rate, adult total (% of people ages 15 and above).csv')
+    dataIndus = pd.read_csv('D:/Git/1002 VS/gdp-analysis/rawDataSet/Industry (including construction), value added (% of GDP).csv')
+    dataMobile = pd.read_csv('D:/Git/1002 VS/gdp-analysis/rawDataSet/Mobile cellular subscriptions (per 100 people).csv')
+    dataMort = pd.read_csv('D:/Git/1002 VS/gdp-analysis/rawDataSet/Mortality rate, infant (per 1,000 live births).csv')
+    dataCrop = pd.read_csv('D:/Git/1002 VS/gdp-analysis/rawDataSet/Permanent cropland (% of land area).csv')
+    dataPopDen = pd.read_csv('D:/Git/1002 VS/gdp-analysis/rawDataSet/Population density (people per sq. km of land area).csv')
+    dataPop = pd.read_csv('D:/Git/1002 VS/gdp-analysis/rawDataSet/Population, total.csv')
+    dataServ = pd.read_csv('D:/Git/1002 VS/gdp-analysis/rawDataSet/Services, value added (% of GDP).csv')
+    dataArea = pd.read_csv('D:/Git/1002 VS/gdp-analysis/rawDataSet/Surface area (sq. km).csv')
 
     #Selecting row based on country selected
     rowGDP = dataGDP.loc[dataGDP['Country Name'] == userSelection]
@@ -98,12 +98,10 @@ def corrGDPDict(dataframe):
          col2 = df[df.columns[i]]
          correlation = col1.corr(col2)
          corrDict[df.columns[i]] = correlation
-
     GDPCorrDict = sorted(corrDict.items(), key=lambda x: x[1], reverse=True)
-
     return GDPCorrDict
 
-#Correlation Dictionary
+# Correlation Dictionary
 def dict(dataframe):
     df = dataframe
     corrDict = {}
@@ -112,9 +110,7 @@ def dict(dataframe):
          col2 = df[df.columns[i]]
          correlation = col1.corr(col2)
          corrDict[df.columns[i]] = correlation
-
-    
-    print(corrDict)
+    # print(corrDict)
     return corrDict
 
 

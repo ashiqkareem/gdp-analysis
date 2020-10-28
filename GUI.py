@@ -2,33 +2,18 @@ import tkinter
 from tkinter import ttk
 from tkinter import *
 from tkintertable import TableCanvas, TableModel
-from singleCountryDataSet import *
-from dataCleaning import *
+from gdpAnalysisFunctions import *
 from pandastable import Table
 from pandastable import config
+from showGDP import *
+from data import *
+
 
 def importMsg():
     if True:
         msgLblT1.config(text="File import success!", fg="green")
     else:
         msgLblT1.config(text="File import failed!", fg="red")
-
-
-def tableWindow():
-    # Create window and disable resize
-    newWindow = Toplevel(window, bg="lightblue")
-    newWindow.resizable(0, 0)
-
-    # Create table
-    tframe = Frame(newWindow)
-    tframe.pack()
-    data = {'rec1': {'col1': 99.88, 'col2': 108.79, 'label': 'rec1'},
-       'rec2': {'col1': 99.88, 'col2': 108.79, 'label': 'rec2'}
-       } 
-    table = TableCanvas(tframe, data=data)
-
-    # Update and show table
-    table.show()
 
 # Define all countries
 allCountries = ["Afghanistan",
@@ -250,6 +235,22 @@ allCountries = ["Afghanistan",
                 "Zimbabwe"
                 ]
 
+gdpFactorsList = ["GDP (current USD)",
+                  "Agriculture, forestry, and fishing, value added (% of GDP)",
+                  "Arable land (% of land area)",
+                  "Birth rate, crude (per 1,000 people)",
+                  "Death rate, crude (per 1,000 people)",
+                  "Individuals using the Internet (% of population)",
+                  "Industry (including construction), value added (% of GDP)",
+                  "Literacy rate, adult total (% of people ages 15 and above)",
+                  "Mobile cellular subscriptions (per 100 people)",
+                  "Mortality rate, infant (per 1,000 live births)",
+                  "Permanent cropland (% of land area)",
+                  "Population density (people per sq. km of land area)",
+                  "Population, total",
+                  "Services, value added (% of GDP)",
+                  "Surface area (sq. km)"]
+
 # Create window
 window = tkinter.Tk()
 window.title("GDP Analysis")
@@ -298,7 +299,7 @@ msgLblT1.grid(column=0, row=3, padx=30, sticky="w")
 seperatorT2 = ttk.Separator(frameT2, orient=HORIZONTAL)
 seperatorT2.grid(column=0, row=0, padx=15, pady=40)
 
-countryLblT2 = Label(frameT2, text="Search for a country:", bg="lightblue")
+countryLblT2 = Label(frameT2, text="Select a country:", bg="lightblue")
 countryLblT2.grid(column=1, row=0)
 
 countryCmbT2 = ttk.Combobox(frameT2, width=62, state="readonly")
@@ -311,36 +312,40 @@ actLblT2.grid(column=1, row=1, sticky="w")
 
 actCmbT2 = ttk.Combobox(frameT2, width=62, state="readonly")
 actCmbT2["values"] = ("List correlation values of GDP factors",
+                      "Display correlations values in heat map",
                       "Display GDP factors in graphs",
-                      "Predict GDP in graphs")
+                      "Display simple linear regression graphs (GDP VS Factors)",
+                      "Display best fit line of GDP")
 actCmbT2.current(0)
 actCmbT2.grid(column=2, row=1)
 
-# displayCorrTable(dict(dataframeCreation("China")))
 
 def countryAct():
     '''Link country to action button'''
     if actCmbT2.get() == "List correlation values of GDP factors":
-        displayCorrTable(dict(dataframeCreation(countryCmbT2.get())),countryCmbT2.get())
+        displayCorrTable(dict(dataframeCreation(countryCmbT2.get())), countryCmbT2.get())
+    elif actCmbT2.get() == "Display correlations values in heat map":
+        heatMap(dataframeCreation(countryCmbT2.get()))
     elif actCmbT2.get() == "Display GDP factors in graphs":
-        displayFactorsGraph(corrGDPDict(dataframeCreation(countryCmbT2.get())),dataframeCreation(countryCmbT2.get()))
+        displayFactorsGraph(corrGDPDict(dataframeCreation(countryCmbT2.get())), dataframeCreation(countryCmbT2.get()))
+    elif actCmbT2.get() == "Display simple linear regression graphs (GDP VS Factors)":
+        displayLinearRegFactor(dataframeCreation(countryCmbT2.get()))
     else:
-        print(actCmbT2.get(), countryCmbT2.get())
+        linearReg(countryCmbT2, dataframeCreation(countryCmbT2.get()))
+
 
 actBtnT2 = Button(frameT2, text="Generate", width=15, command=countryAct)
 actBtnT2.grid(column=3, row=1, padx=20, sticky="w")
 
-def expFunc():
-    exportCSV(dataframeCreation(countryCmbT2.get()),countryCmbT2.get())
-
-expBtnT2 = Button(frame2T2, text="Export All Data Sets For Country", width=90, command=expFunc)
+expBtnT2 = Button(
+    frame2T2, text="Export All Data Sets For Country", width=90, command=lambda: exportCSV(dataframeCreation(countryCmbT2.get()), countryCmbT2.get()))
 expBtnT2.grid(column=0, row=0, pady=10, padx=35, sticky="w")
 
 seperatorT2 = ttk.Separator(frame3T2, orient=HORIZONTAL)
 seperatorT2.grid(column=0, row=0, padx=15)
 
-country2LblT2 = Label(frame3T2, text="Search for a country:", bg="lightblue")
-country2LblT2.grid(column=1, row=0)
+country2LblT2 = Label(frame3T2, text="Select a country:", bg="lightblue")
+country2LblT2.grid(column=1, row=0, sticky="w")
 
 country2CmbT2 = ttk.Combobox(frame3T2, width=62, state="readonly")
 country2CmbT2["values"] = (allCountries)
@@ -351,56 +356,43 @@ facLblT2 = Label(frame3T2, text="Select a GDP factor:", bg="lightblue")
 facLblT2.grid(column=1, row=1, pady=30, sticky="w")
 
 facCmbT2 = ttk.Combobox(frame3T2, width=62, state="readonly")
-facCmbT2["values"] = ("GDP (current USD)",
-                      "Agriculture, forestry, and fishing, value added (% of GDP)",
-                      "Arable land (% of land area)",
-                      "Birth rate, crude (per 1,000 people)",
-                      "Death rate, crude (per 1,000 people)",
-                      "Individuals using the Internet (% of population)",
-                      "Industry (including construction), value added (% of GDP)",
-                      "Literacy rate, adult total (% of people ages 15 and above)",
-                      "Mobile cellular subscriptions (per 100 people)",
-                      "Mortality rate, infant (per 1,000 live births)",
-                      "Permanent cropland (% of land area)",
-                      "Population density (people per sq. km of land area)",
-                      "Population, total",
-                      "Services, value added (% of GDP)",
-                      "Surface area (sq. km)")
+facCmbT2["values"] = gdpFactorsList
 facCmbT2.current(0)
 facCmbT2.grid(column=2, row=1)
+
 
 def gdpFac():
     '''Link country to GDP factor button'''
     if facCmbT2.get() == "GDP (current USD)":
-        displayFactor(dataframeCreation(country2CmbT2.get()),"GDP")
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "GDP")
     elif facCmbT2.get() == "Agriculture, forestry, and fishing, value added (% of GDP)":
-        displayFactor(dataframeCreation(country2CmbT2.get()),"Agriculture")
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Agriculture")
     elif facCmbT2.get() == "Arable land (% of land area)":
-        displayFactor(dataframeCreation(country2CmbT2.get()),"Arable Land")
+        displayFactor(dataframeCreation(country2CmbT2.get()), "Arable Land")
     elif facCmbT2.get() == "Birth rate, crude (per 1,000 people)":
-        displayFactor(dataframeCreation(country2CmbT2.get()),"Birth Rate")
+        displayFactor(dataframeCreation(country2CmbT2.get()), "Birth Rate")
     elif facCmbT2.get() == "Death rate, crude (per 1,000 people)":
-        displayFactor(dataframeCreation(country2CmbT2.get()),"Death Rate")
+        displayFactor(dataframeCreation(country2CmbT2.get()), "Death Rate")
     elif facCmbT2.get() == "Individuals using the Internet (% of population)":
-        displayFactor(dataframeCreation(country2CmbT2.get()),"Individuals using Internet")
+        displayFactor(dataframeCreation(country2CmbT2.get()), "Individuals using Internet")
     elif facCmbT2.get() == "Industry (including construction), value added (% of GDP)":
-        displayFactor(dataframeCreation(country2CmbT2.get()),"Industry")
+        displayFactor(dataframeCreation(country2CmbT2.get()), "Industry")
     elif facCmbT2.get() == "Literacy rate, adult total (% of people ages 15 and above)":
-        displayFactor(dataframeCreation(country2CmbT2.get()),"Literacy")
+        displayFactor(dataframeCreation(country2CmbT2.get()), "Literacy")
     elif facCmbT2.get() == "Mobile cellular subscriptions (per 100 people)":
-        displayFactor(dataframeCreation(country2CmbT2.get()),"Mobile Subscriptions")
+        displayFactor(dataframeCreation(country2CmbT2.get()), "Mobile Subscriptions")
     elif facCmbT2.get() == "Mortality rate, infant (per 1,000 live births)":
-        displayFactor(dataframeCreation(country2CmbT2.get()),"Mortality Rate")
+        displayFactor(dataframeCreation(country2CmbT2.get()), "Mortality Rate")
     elif facCmbT2.get() == "Permanent cropland (% of land area)":
-        displayFactor(dataframeCreation(country2CmbT2.get()),"Cropland")
+        displayFactor(dataframeCreation(country2CmbT2.get()), "Cropland")
     elif facCmbT2.get() == "Population density (people per sq. km of land area)":
-        displayFactor(dataframeCreation(country2CmbT2.get()),"Population Density")
+        displayFactor(dataframeCreation(country2CmbT2.get()), "Population Density")
     elif facCmbT2.get() == "Population, total":
-        displayFactor(dataframeCreation(country2CmbT2.get()),"Population")
+        displayFactor(dataframeCreation(country2CmbT2.get()), "Population")
     elif facCmbT2.get() == "Services, value added (% of GDP)":
-        displayFactor(dataframeCreation(country2CmbT2.get()),"Services")
+        displayFactor(dataframeCreation(country2CmbT2.get()), "Services")
     else:
-        displayFactor(dataframeCreation(country2CmbT2.get()),"Surface Area")
+        displayFactor(dataframeCreation(country2CmbT2.get()), "Surface Area")
 
 facBtnT2 = Button(frame3T2, text="Generate", width=15, command=gdpFac)
 facBtnT2.grid(column=3, row=1, padx=20, sticky="w")
@@ -424,85 +416,39 @@ yearCmbT3["values"] = (yearList)
 yearCmbT3.current(0)
 yearCmbT3.grid(column=2, row=0)
 
+facLblT3 = Label(frameT3, text="Select a GDP factor:", bg="lightblue")
+facLblT3.grid(column=1, row=1, pady=30, sticky="w")
+
+facCmbT3 = ttk.Combobox(frameT3, width=62, state="readonly")
+facCmbT3["values"] = gdpFactorsList
+facCmbT3.current(0)
+facCmbT3.grid(column=2, row=1)
+
+facBtnT3 = Button(frameT3, text="Generate", width=15,
+                  command=lambda: display_specific_factor(yearCmbT3.get(), facCmbT3.get()))
+facBtnT3.grid(column=3, row=1, padx=10, sticky="w")
+
 actLblT3 = Label(frameT3, text="Select an action:", bg="lightblue")
-actLblT3.grid(column=1, row=1, pady=10, sticky="w")
+actLblT3.grid(column=1, row=2, pady=10, sticky="w")
 
 actCmbT3 = ttk.Combobox(frameT3, width=62, state="readonly")
 actCmbT3["values"] = ("List GDP of all countries",
                       "Display GDP of top 10 countries in bar graphs",
                       "Display GDP of bottom 10 countries in bar graphs")
 actCmbT3.current(0)
-actCmbT3.grid(column=2, row=1)
+actCmbT3.grid(column=2, row=2)
 
 def yearAct():
     '''Link year to action button'''
     if actCmbT3.get() == "List GDP of all countries":
-        print(actCmbT3.get(), yearCmbT3.get())
-    elif actCmbT2.get() == "Display GDP of top 10 countries in bar graphs":
-        print(actCmbT3.get(), yearCmbT3.get())
+        display_all(yearCmbT3.get())
+    elif actCmbT3.get() == "Display GDP of top 10 countries in bar graphs":
+        display_top_gpd(yearCmbT3.get())
     else:
-        print(actCmbT3.get(), yearCmbT3.get())
+        display_btm_gpd(yearCmbT3.get())
 
 actBtnT3 = Button(frameT3, text="Generate", width=15, command=yearAct)
-actBtnT3.grid(column=3, row=1, padx=10, sticky="w")
-
-facLblT3 = Label(frameT3, text="Select a GDP factor:", bg="lightblue")
-facLblT3.grid(column=1, row=2, pady=30, sticky="w")
-
-facCmbT3 = ttk.Combobox(frameT3, width=62, state="readonly")
-facCmbT3["values"] = ("GDP (current USD)",
-                      "Agriculture, forestry, and fishing, value added (% of GDP)",
-                      "Arable land (% of land area)",
-                      "Birth rate, crude (per 1,000 people)",
-                      "Death rate, crude (per 1,000 people)",
-                      "Individuals using the Internet (% of population)",
-                      "Industry (including construction), value added (% of GDP)",
-                      "Literacy rate, adult total (% of people ages 15 and above)",
-                      "Mobile cellular subscriptions (per 100 people)",
-                      "Mortality rate, infant (per 1,000 live births)",
-                      "Permanent cropland (% of land area)",
-                      "Population density (people per sq. km of land area)",
-                      "Population, total",
-                      "Services, value added (% of GDP)",
-                      "Surface area (sq. km)")
-facCmbT3.current(0)
-facCmbT3.grid(column=2, row=2)
-
-def yearFac():
-    '''Link year to gdp factor button'''
-    if facCmbT3.get() == "GDP (current USD)":
-        print(facCmbT3.get(), yearCmbT3.get())
-    elif facCmbT3.get() == "Agriculture, forestry, and fishing, value added (% of GDP)":
-        print(facCmbT3.get(), yearCmbT3.get())
-    elif facCmbT3.get() == "Arable land (% of land area)":
-        print(facCmbT3.get(), yearCmbT3.get())
-    elif facCmbT3.get() == "Birth rate, crude (per 1,000 people)":
-        print(facCmbT3.get(), yearCmbT3.get())
-    elif facCmbT3.get() == "Death rate, crude (per 1,000 people)":
-        print(facCmbT3.get(), yearCmbT3.get())
-    elif facCmbT3.get() == "Individuals using the Internet (% of population)":
-        print(facCmbT3.get(), yearCmbT3.get())
-    elif facCmbT3.get() == "Industry (including construction), value added (% of GDP)":
-        print(facCmbT3.get(), yearCmbT3.get())
-    elif facCmbT3.get() == "Literacy rate, adult total (% of people ages 15 and above)":
-        print(facCmbT3.get(), yearCmbT3.get())
-    elif facCmbT3.get() == "Mobile cellular subscriptions (per 100 people)":
-        print(facCmbT3.get(), yearCmbT3.get())
-    elif facCmbT3.get() == "Mortality rate, infant (per 1,000 live births)":
-        print(facCmbT3.get(), yearCmbT3.get())
-    elif facCmbT3.get() == "Permanent cropland (% of land area)":
-        print(facCmbT3.get(), yearCmbT3.get())
-    elif facCmbT3.get() == "Population density (people per sq. km of land area)":
-        print(facCmbT3.get(), yearCmbT3.get())
-    elif facCmbT3.get() == "Population, total":
-        print(facCmbT3.get(), yearCmbT3.get())
-    elif facCmbT3.get() == "Services, value added (% of GDP)":
-        print(facCmbT3.get(), yearCmbT3.get())
-    else:
-        print(facCmbT3.get(), yearCmbT3.get())
-
-facBtnT3 = Button(frameT3, text="Generate", width=15, command=yearFac)
-facBtnT3.grid(column=3, row=2, padx=10, sticky="w")
+actBtnT3.grid(column=3, row=2, padx=10, sticky="w")
 
 seperator2T3 = ttk.Separator(frameT3, orient=VERTICAL)
 seperator2T3.grid(column=1, row=3, padx=15, pady=30)
@@ -527,17 +473,17 @@ actLbl2T3 = Label(frameT3, text="Select an action:", bg="lightblue")
 actLbl2T3.grid(column=1, row=5, pady=30, sticky="w")
 
 act2CmbT3 = ttk.Combobox(frameT3, width=62, state="readonly")
-act2CmbT3["values"] = ("Display GDP in X years",
-                       "Display top 10 GDP predictions in X years in bar graphs",
-                       "Display bottom 10 GDP predictions in X years in bar graphs")
+act2CmbT3["values"] = ("Display GDP of all countries in Year X",
+                       "Display top 10 GDP predictions in Year X in bar graphs",
+                       "Display bottom 10 GDP predictions in Year X in bar graphs")
 act2CmbT3.current(0)
 act2CmbT3.grid(column=2, row=5)
 
 def preYearAct():
     '''Link prediction year to action button'''
-    if act2CmbT3.get() == "List GDP of all countries":
+    if act2CmbT3.get() == "Display GDP of all countries in Year X":
         print(act2CmbT3.get(), preYearCmbT3.get())
-    elif act2CmbT3.get() == "Display GDP of top 10 countries in bar graphs":
+    elif act2CmbT3.get() == "Display GDP of top 10 countries in Year X in bar graphs":
         print(act2CmbT3.get(), preYearCmbT3.get())
     else:
         print(act2CmbT3.get(), preYearCmbT3.get())
