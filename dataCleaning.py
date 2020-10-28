@@ -98,12 +98,10 @@ def corrGDPDict(dataframe):
          col2 = df[df.columns[i]]
          correlation = col1.corr(col2)
          corrDict[df.columns[i]] = correlation
-
     GDPCorrDict = sorted(corrDict.items(), key=lambda x: x[1], reverse=True)
-
     return GDPCorrDict
 
-#Correlation Dictionary
+# Correlation Dictionary
 def dict(dataframe):
     df = dataframe
     corrDict = {}
@@ -112,9 +110,7 @@ def dict(dataframe):
          col2 = df[df.columns[i]]
          correlation = col1.corr(col2)
          corrDict[df.columns[i]] = correlation
-
-    
-    print(corrDict)
+    # print(corrDict)
     return corrDict
 
 
