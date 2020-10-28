@@ -18,8 +18,9 @@ from pandastable import Table
 from pandastable import config
 
 # Function that creates a dataframe for the selected country
-def dataframeCreation(userSelection):
-    dataGDP = pd.read_csv('../gdp-analysis/rawDataSet/GDP (current USD).csv')
+def dataframeCreation(singleCountry):
+    # Pathways to various datasets used
+    dataGDP = pd.read_csv('..gdp-analysis/rawDataSet/GDP, PPP (current international $).csv')
     dataAgri = pd.read_csv('../gdp-analysis/rawDataSet/Agriculture, forestry, and fishing, value added (% of GDP).csv')
     dataArab = pd.read_csv('../gdp-analysis/rawDataSet/Arable land (% of land area).csv')
     dataBirth = pd.read_csv('../gdp-analysis/rawDataSet/Birth rate, crude (per 1,000 people).csv')
@@ -36,21 +37,20 @@ def dataframeCreation(userSelection):
     dataArea = pd.read_csv('../gdp-analysis/rawDataSet/Surface area (sq. km).csv')
 
     #Selecting row based on country selected
-    rowGDP = dataGDP.loc[dataGDP['Country Name'] == userSelection]
-    rowAgri = dataAgri.loc[dataAgri['Country Name'] == userSelection]
-    rowArab = dataArab.loc[dataArab['Country Name'] == userSelection]
-    rowBirth = dataBirth.loc[dataBirth['Country Name'] == userSelection]
-    rowDeath = dataDeath.loc[dataDeath['Country Name'] == userSelection]
-    rowIndiv = dataIndiv.loc[dataIndiv['Country Name'] == userSelection]
-    rowIndus = dataIndus.loc[dataIndus['Country Name'] == userSelection]
-    rowLit = dataLit.loc[dataLit['Country Name'] == userSelection]
-    rowMobile = dataMobile.loc[dataMobile['Country Name'] == userSelection]
-    rowMort = dataMort.loc[dataMort['Country Name'] == userSelection]
-    rowCrop = dataCrop.loc[dataCrop['Country Name'] == userSelection]
-    rowPopDen = dataPopDen.loc[dataPopDen['Country Name'] == userSelection]
-    rowPop = dataPop.loc[dataPop['Country Name'] == userSelection]
-    rowServ = dataServ.loc[dataServ['Country Name'] == userSelection]
-    rowArea = dataArea.loc[dataArea['Country Name'] == userSelection]
+    rowGDP = dataGDP.loc[dataGDP['Country Name'] == singleCountry]
+    rowAgri = dataAgri.loc[dataAgri['Country Name'] == singleCountry]
+    rowArab = dataArab.loc[dataArab['Country Name'] == singleCountry]
+    rowBirth = dataBirth.loc[dataBirth['Country Name'] == singleCountry]
+    rowDeath = dataDeath.loc[dataDeath['Country Name'] == singleCountry]
+    rowIndiv = dataIndiv.loc[dataIndiv['Country Name'] == singleCountry]
+    rowIndus = dataIndus.loc[dataIndus['Country Name'] == singleCountry]
+    rowMobile = dataMobile.loc[dataMobile['Country Name'] == singleCountry]
+    rowMort = dataMort.loc[dataMort['Country Name'] == singleCountry]
+    rowCrop = dataCrop.loc[dataCrop['Country Name'] == singleCountry]
+    rowPopDen = dataPopDen.loc[dataPopDen['Country Name'] == singleCountry]
+    rowPop = dataPop.loc[dataPop['Country Name'] == singleCountry]
+    rowServ = dataServ.loc[dataServ['Country Name'] == singleCountry]
+    rowArea = dataArea.loc[dataArea['Country Name'] == singleCountry]
 
     # Transposing columns and rows
     colGDP = rowGDP.T
@@ -60,7 +60,6 @@ def dataframeCreation(userSelection):
     colDeath = rowDeath.T
     colIndiv = rowIndiv.T
     colIndus = rowIndus.T
-    colLit = rowLit.T
     colMobile = rowMobile.T
     colMort = rowMort.T
     colCrop = rowCrop.T
@@ -70,10 +69,10 @@ def dataframeCreation(userSelection):
     colArea = rowArea.T
 
     # Concatenating the different factors into 1 dataframe
-    df = pd.concat([colGDP, colAgri, colArab, colBirth, colDeath, colIndiv, colIndus, colLit, colMobile, colMort, colCrop,
+    df = pd.concat([colGDP, colAgri, colArab, colBirth, colDeath, colIndiv, colIndus, colMobile, colMort, colCrop,
                     colPopDen, colPop, colServ, colArea], axis=1)
     df.columns = ['GDP', 'Agriculture', 'Arable Land', 'Birth Rate', 'Death Rate', 'Individuals using Internet', 'Industry',
-                  'Literacy','Mobile Subscriptions', 'Mortality Rate', 'Cropland', 'Population Density', 'Population', 'Services',
+                  'Mobile Subscriptions', 'Mortality Rate', 'Cropland', 'Population Density', 'Population', 'Services',
                   'Surface Area']
     df.drop(['Series Name', 'Series Code', 'Country Name', 'Country Code'], axis=0, inplace=True)
     new_index = []
@@ -87,9 +86,17 @@ def dataframeCreation(userSelection):
     df = df.dropna()
     df = pd.DataFrame(df, dtype=float)
 
-    return df
+    # Check to see if dataframe is empty or not
+    if df.empty:
+        return False
+    else:
+        return df
 
-# Correlation value of GDP vs factor (requires a for loop implementation)
+# Tab 1 - Function that allows for importing of datasets
+
+# Tab 1 -Function that allows for exporting of datasets
+
+# Prerequisites for Tab 2 - Correlation value of GDP vs Factor
 def corrGDPDict(dataframe):
     df = dataframe
     corrDict = {}
@@ -101,7 +108,8 @@ def corrGDPDict(dataframe):
     GDPCorrDict = sorted(corrDict.items(), key=lambda x: x[1], reverse=True)
     return GDPCorrDict
 
-# Correlation Dictionary
+
+# Prerequisites for Tab 2 - Correlation Dictionary
 def dict(dataframe):
     df = dataframe
     corrDict = {}
@@ -114,20 +122,7 @@ def dict(dataframe):
     return corrDict
 
 
-# Display GDP Factor graph
-def displayFactorsGraph(dict, dataframe):
-    GDPCorrDict = dict
-    df = dataframe
-    plt.figure("GDP Factors", figsize=(12,6))
-    plt.suptitle("GDP Factors")
-    for i in range(len(GDPCorrDict)):
-        plt.subplot(5, 3, i + 1)
-        sns.lineplot(x=GDPCorrDict[i][0], y='GDP', data=df)
-    plt.tight_layout()
-    plt.show()
-
-
-# Display Correlation Table
+# Tab 2 - Function that displays Correlation Table
 def displayCorrTable(dict,userSelection):
     corrDict = dict
     df = pd.DataFrame(data=corrDict, index=[0]).T
@@ -142,44 +137,68 @@ def displayCorrTable(dict,userSelection):
     pt.showIndex()
     pt.show()
 
-# Linear Regression to predict GDP values
-def linearReg(dataframe):
+
+# Tab 2 - Function that displays heatmap consisting correlation values
+def heatMap(dataframe):
     df = dataframe
-    Y = df.iloc[:, 0].values.reshape(-1, 1)
+    plt.figure(figsize=(12, 12))
+    sns.heatmap(data=df.iloc[:, 0:].corr(), annot=True, fmt='.2f', cmap='coolwarm')
+    plt.show()
+
+
+# Tab 2 - Function that displays GDP Factor graph
+def displayFactorsGraph(dict, dataframe):
+    GDPCorrDict = dict
+    df = dataframe
+    plt.figure("GDP Factors", figsize=(12,6))
+    plt.suptitle("GDP Factors")
+    for i in range(len(GDPCorrDict)):
+        plt.subplot(5, 3, i + 1)
+        sns.lineplot(x=GDPCorrDict[i][0], y='GDP', data=df)
+    plt.tight_layout()
+    plt.show()
+
+
+# Tab 2 - Simple Linear Regression Models (GDP vs Factors)
+def displayLinearRegFactor(dataframe):
+    df = dataframe
+    x = 0
+    for i in df.columns:
+        if i == 'GDP':
+            pass
+        else:
+            plt.figure("Simple Linear Regression Models", figsize=(12, 6))
+            plt.subplot(5, 3, x + 1)
+            x += 1
+            X = df[i].values.reshape(-1, 1)
+            Y = df['GDP'].values.reshape(-1, 1)
+            lr = LinearRegression()
+            lr.fit(X, Y)
+            y_pred = lr.predict(X)
+            plt.scatter(X, Y, s=5)
+            plt.plot(X, y_pred, color='red')
+            # plt.title(i + ' - (Simple Linear Regression Model)') # Better Graph Title
+            plt.xlabel(i)
+            plt.ylabel('GDP')
+    plt.tight_layout()
+    plt.show()
+
+
+# Tab 2 - Function that predicts the GDP value of a country/countries
+def linearReg(countryInput, yearInput, dataframe):
+    df = dataframe
     X = df.index.values.reshape(-1, 1)
+    Y = df['GDP'].values.reshape(-1, 1)
     lr = LinearRegression()
     lr.fit(X, Y)
     y_pred = lr.predict(X)
     plt.scatter(X, Y, s=10)
     plt.plot(X, y_pred, color='red')
-    plt.title(userSelection + ' - GDP (Simple Linear Regression Model)') # Better Graph Title
+    plt.title(countryInput + "'s Best Fit Line") # Better Graph Title
     plt.xlabel('Years')
     plt.ylabel('GDP Per Capita (Constant LCU)')
     plt.show()
-    print(lr.predict([[2050]]))
+    print(countryInput, lr.predict([[yearInput]]))
 
-    # Heatmap to see general pattern in dataset
-    plt.figure(figsize=(12, 12))
-    sns.heatmap(data=df.iloc[:, 0:].corr(), annot=True, fmt='.2f', cmap='coolwarm')
-    plt.show()
 
-# # Showing Linear Regression Mathematical Scores (?)
-# linReg = LinearRegression(normalize=True)
-# linReg.fit(X, Y)
-# print(linReg.score(X, Y))
-# print(linReg.coef_)
-# print(linReg.intercept_)
-
-# Select a GDP Factor
-def displayFactor(dataframe,factor):
-    df = dataframe
-    inputFactor = factor
-    print(df[inputFactor])
-
-# Exporting all datasets for country
-def exportCSV(dataframe, country):
-    df = dataframe
-    df.to_csv(r'../gdp-analysis/output/'+country+'.csv', index=True)
-
-# displayCorrTable(dict(dataframeCreation("China")))
-# mainloop()
+# Checking whether functions work here
