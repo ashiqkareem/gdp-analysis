@@ -43,6 +43,7 @@ def dataframeCreation(singleCountry):
     rowBirth = dataBirth.loc[dataBirth['Country Name'] == singleCountry]
     rowDeath = dataDeath.loc[dataDeath['Country Name'] == singleCountry]
     rowIndiv = dataIndiv.loc[dataIndiv['Country Name'] == singleCountry]
+    rowLit = dataLit.loc[dataLit['Country Name'] == singleCountry]
     rowIndus = dataIndus.loc[dataIndus['Country Name'] == singleCountry]
     rowMobile = dataMobile.loc[dataMobile['Country Name'] == singleCountry]
     rowMort = dataMort.loc[dataMort['Country Name'] == singleCountry]
@@ -59,6 +60,7 @@ def dataframeCreation(singleCountry):
     colBirth = rowBirth.T
     colDeath = rowDeath.T
     colIndiv = rowIndiv.T
+    colLit = rowLit.T
     colIndus = rowIndus.T
     colMobile = rowMobile.T
     colMort = rowMort.T
@@ -141,51 +143,123 @@ def displayCorrTable(dict,userSelection):
 # Tab 2 - Function that displays heatmap consisting correlation values
 def heatMap(dataframe):
     df = dataframe
-    plt.figure(figsize=(12, 12))
-    sns.heatmap(data=df.iloc[:, 0:].corr(), annot=True, fmt='.2f', cmap='coolwarm')
-    plt.show()
+    if df is False:
+        tk.messagebox.showinfo("Error", "Insufficient data")
+    else:
+        plt.figure(figsize=(12, 12))
+        sns.heatmap(data=df.iloc[:, 0:].corr(), annot=True, fmt='.2f', cmap='coolwarm')
+        plt.show()
+    
 
 
 # Tab 2 - Function that displays GDP Factor graph
 def displayFactorsGraph(dict, dataframe):
     GDPCorrDict = dict
     df = dataframe
-    plt.figure("GDP Factors", figsize=(12,6))
-    plt.suptitle("GDP Factors")
-    for i in range(len(GDPCorrDict)):
-        plt.subplot(5, 3, i + 1)
-        sns.lineplot(x=GDPCorrDict[i][0], y='GDP', data=df)
-    plt.tight_layout()
-    plt.show()
+    if df is False:
+        tk.messagebox.showinfo("Error", "Insufficient data")
+    else:
+        plt.figure("GDP Factors", figsize=(12,6))
+        plt.suptitle("GDP Factors")
+        for i in range(len(GDPCorrDict)):
+            plt.subplot(5, 3, i + 1)
+            sns.lineplot(x=GDPCorrDict[i][0], y='GDP', data=df)
+        plt.tight_layout()
+        plt.show()
 
 
 # Tab 2 - Simple Linear Regression Models (GDP vs Factors)
 def displayLinearRegFactor(dataframe):
     df = dataframe
-    x = 0
-    for i in df.columns:
-        if i == 'GDP':
-            pass
-        else:
-            plt.figure("Simple Linear Regression Models", figsize=(12, 6))
-            plt.subplot(5, 3, x + 1)
-            x += 1
-            X = df[i].values.reshape(-1, 1)
-            Y = df['GDP'].values.reshape(-1, 1)
-            lr = LinearRegression()
-            lr.fit(X, Y)
-            y_pred = lr.predict(X)
-            plt.scatter(X, Y, s=5)
-            plt.plot(X, y_pred, color='red')
-            # plt.title(i + ' - (Simple Linear Regression Model)') # Better Graph Title
-            plt.xlabel(i)
-            plt.ylabel('GDP')
-    plt.tight_layout()
-    plt.show()
+    if df is False:
+        tk.messagebox.showinfo("Error", "Insufficient data")
+    else:
+        x = 0
+        for i in df.columns:
+            if i == 'GDP':
+                pass
+            else:
+                plt.figure("Simple Linear Regression Models", figsize=(12, 6))
+                plt.subplot(5, 3, x + 1)
+                x += 1
+                X = df[i].values.reshape(-1, 1)
+                Y = df['GDP'].values.reshape(-1, 1)
+                lr = LinearRegression()
+                lr.fit(X, Y)
+                y_pred = lr.predict(X)
+                plt.scatter(X, Y, s=5)
+                plt.plot(X, y_pred, color='red')
+                # plt.title(i + ' - (Simple Linear Regression Model)') # Better Graph Title
+                plt.xlabel(i)
+                plt.ylabel('GDP')
+        plt.tight_layout()
+        plt.show()
 
 
 # Tab 2 - Function that predicts the GDP value of a country/countries
 def linearReg(countryInput, dataframe):
+    df = dataframe
+    if df is False:
+        tk.messagebox.showinfo("Error", "Insufficient data")
+    else:
+        X = df.index.values.reshape(-1, 1)
+        Y = df['GDP'].values.reshape(-1, 1)
+        lr = LinearRegression()
+        lr.fit(X, Y)
+        y_pred = lr.predict(X)
+        plt.scatter(X, Y, s=10)
+        plt.plot(X, y_pred, color='red')
+        # plt.title(countryInput + "'s Best Fit Line") # Better Graph Title
+        plt.xlabel('Years')
+        plt.ylabel('GDP Per Capita (Constant LCU)')
+        plt.show()
+        # print(countryInput, lr.predict([[yearInput]]))
+
+
+# Tab 2 - Function that allows user to view factor specific data
+def displayFactor(country, dataframe, factor):
+    df = dataframe
+    if df is False:
+        tk.messagebox.showinfo("Error", "Insufficient data")
+    else:
+        countryName = country
+        dfGDP = df['GDP']
+        dfFactor = df[factor]
+        df = pd.concat([dfGDP, dfFactor], axis=1)
+        window = tk.Toplevel()
+        window.title(countryName + "'s " + factor + ' Data')
+        f = Frame(window)
+        f.pack(fill=BOTH, expand=1)
+        pt = Table(f, dataframe=df, showstatusbar=True, width=200, height=300)
+        options = {'cellwidth': 150, 'floatprecision': 4, 'align': 'center'}
+        config.apply_options(options, pt)
+        pt.showIndex()
+        pt.show()
+
+
+# Tab 2 - Function that allows users to export all datasets for country
+def exportCSV(dataframe, country):
+    df = dataframe
+    if df is False:
+        tk.messagebox.showinfo("Error", "Insufficient data")
+    else:
+        df.to_csv(r'../gdp-analysis/output/'+country+'.csv', index=True)
+
+# Checking whether functions work here
+
+def countryList():
+    dataGDP = pd.read_csv('../gdp-analysis/rawDataSet/GDP, PPP (current international $).csv')
+    dataGDP = dataGDP.dropna()
+    dataGDP = dataGDP.set_index('Country Name')
+    dataGDP.drop(['Series Name', 'Series Code', 'Country Code'], axis=1, inplace=True)
+    counter = 0
+    countries = []
+    for i in dataGDP.index:
+        counter += 1
+        countries.append(i)
+    return countries
+
+def linearReg2(countryInput, yearInput, dataframe):
     df = dataframe
     X = df.index.values.reshape(-1, 1)
     Y = df['GDP'].values.reshape(-1, 1)
@@ -194,22 +268,26 @@ def linearReg(countryInput, dataframe):
     y_pred = lr.predict(X)
     plt.scatter(X, Y, s=10)
     plt.plot(X, y_pred, color='red')
-    # plt.title(countryInput + "'s Best Fit Line") # Better Graph Title
+    plt.title(countryInput + "'s Best Fit Line") # Better Graph Title
     plt.xlabel('Years')
     plt.ylabel('GDP Per Capita (Constant LCU)')
-    plt.show()
-    # print(countryInput, lr.predict([[yearInput]]))
+    # plt.show()
+    return countryInput, lr.predict([[yearInput]])
 
-
-# Tab 2 - Function that allows user to view factor specific data
-def displayFactor(country, dataframe, factor):
-    countryName = country
-    df = dataframe
-    dfGDP = df['GDP']
-    dfFactor = df[factor]
-    df = pd.concat([dfGDP, dfFactor], axis=1)
+# Tab 3 - Functions that displays GDP of all countries in Year X
+def allYearsGDPPrediction(countries, predictionYear):
+    df = pd.DataFrame(columns=['Countries', 'Predicted GDP'])
+    for i in countries:
+        if dataframeCreation(i) is False:
+            print(i + "'s dataframe is empty!")
+            df = df.append(pd.Series([i, 'No Data To Make Prediction'], index=df.columns), ignore_index=True)
+        else:
+            pred = linearReg2(i, predictionYear, dataframeCreation(i))[1][0][0]
+            print(i, pred)
+            df = df.append(pd.Series([i, pred], index=df.columns), ignore_index=True)
+    print(df)
     window = tk.Toplevel()
-    window.title(countryName + "'s " + factor + ' Data')
+    window.title("All Countries' GDP Prediction in the year: %s" % predictionYear)
     f = Frame(window)
     f.pack(fill=BOTH, expand=1)
     pt = Table(f, dataframe=df, showstatusbar=True, width=200, height=300)
@@ -217,11 +295,3 @@ def displayFactor(country, dataframe, factor):
     config.apply_options(options, pt)
     pt.showIndex()
     pt.show()
-
-
-# Tab 2 - Function that allows users to export all datasets for country
-def exportCSV(dataframe, country):
-    df = dataframe
-    df.to_csv(r'../gdp-analysis/output/'+country+'.csv', index=True)
-
-# Checking whether functions work here

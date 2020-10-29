@@ -8,6 +8,7 @@ from pandastable import config
 from matplotlib import pyplot as plt
 import tkinter as tk
 from tkinter import *
+from matplotlib.ticker import ScalarFormatter
 
 # RawDataSet
 path ="../gdp-analysis/rawDataSet/"
@@ -46,7 +47,7 @@ def clean_dataframe(frame):
 
 
 # Declare variable and GDP dataframe
-num = 10
+num = 11
 df = pd.DataFrame(dataGDP)
 df = clean_dataframe(df)
 
@@ -74,9 +75,11 @@ def plot_design(title):
     """
     plt.title(title)
     plt.xlabel("GDP")
+    plt.xscale("log")
+    plt.gca().xaxis.set_major_formatter(ScalarFormatter())
     plt.ylabel("Countries")
     plt.tight_layout()
-    plt.xticks(rotation='15')
+    plt.xticks(fontsize='8',rotation='90')
     plt.show()
 
 
