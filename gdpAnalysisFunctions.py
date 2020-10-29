@@ -224,4 +224,27 @@ def exportCSV(dataframe, country):
     df = dataframe
     df.to_csv(r'../gdp-analysis/output/'+country+'.csv', index=True)
 
+
+# Tab 3 - Functions that displays GDP of all countries in Year X
+def allYearsGDPPrediction(countries, predictionYear):
+    df = pd.DataFrame(columns=['Countries', 'Predicted GDP'])
+    for i in countries:
+        if dataframeCreation(i) is False:
+            print(i + "'s dataframe is empty!")
+            df = df.append(pd.Series([i, 'No Data To Make Prediction'], index=df.columns), ignore_index=True)
+        else:
+            pred = linearReg(i, predictionYear, dataframeCreation(i))[1][0][0]
+            print(i, pred)
+            df = df.append(pd.Series([i, pred], index=df.columns), ignore_index=True)
+    print(df)
+    window = tk.Toplevel()
+    window.title("All Countries' GDP Prediction in the year: %s" % predictionYear)
+    f = Frame(window)
+    f.pack(fill=BOTH, expand=1)
+    pt = Table(f, dataframe=df, showstatusbar=True, width=200, height=300)
+    options = {'cellwidth': 150, 'floatprecision': 4, 'align': 'center'}
+    config.apply_options(options, pt)
+    pt.showIndex()
+    pt.show()
+
 # Checking whether functions work here
