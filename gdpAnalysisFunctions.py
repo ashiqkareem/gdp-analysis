@@ -26,7 +26,6 @@ def dataframeCreation(singleCountry):
     dataBirth = pd.read_csv('../gdp-analysis/rawDataSet/Birth rate, crude (per 1,000 people).csv')
     dataDeath = pd.read_csv('../gdp-analysis/rawDataSet/Death rate, crude (per 1,000 people).csv')
     dataIndiv = pd.read_csv('../gdp-analysis/rawDataSet/Individuals using the Internet (% of population).csv')
-    dataLit = pd.read_csv('../gdp-analysis/rawDataSet/Literacy rate, adult total (% of people ages 15 and above).csv')
     dataIndus = pd.read_csv('../gdp-analysis/rawDataSet/Industry (including construction), value added (% of GDP).csv')
     dataMobile = pd.read_csv('../gdp-analysis/rawDataSet/Mobile cellular subscriptions (per 100 people).csv')
     dataMort = pd.read_csv('../gdp-analysis/rawDataSet/Mortality rate, infant (per 1,000 live births).csv')
@@ -34,7 +33,6 @@ def dataframeCreation(singleCountry):
     dataPopDen = pd.read_csv('../gdp-analysis/rawDataSet/Population density (people per sq. km of land area).csv')
     dataPop = pd.read_csv('../gdp-analysis/rawDataSet/Population, total.csv')
     dataServ = pd.read_csv('../gdp-analysis/rawDataSet/Services, value added (% of GDP).csv')
-    dataArea = pd.read_csv('../gdp-analysis/rawDataSet/Surface area (sq. km).csv')
 
     #Selecting row based on country selected
     rowGDP = dataGDP.loc[dataGDP['Country Name'] == singleCountry]
@@ -43,7 +41,6 @@ def dataframeCreation(singleCountry):
     rowBirth = dataBirth.loc[dataBirth['Country Name'] == singleCountry]
     rowDeath = dataDeath.loc[dataDeath['Country Name'] == singleCountry]
     rowIndiv = dataIndiv.loc[dataIndiv['Country Name'] == singleCountry]
-    rowLit = dataLit.loc[dataLit['Country Name'] == singleCountry]
     rowIndus = dataIndus.loc[dataIndus['Country Name'] == singleCountry]
     rowMobile = dataMobile.loc[dataMobile['Country Name'] == singleCountry]
     rowMort = dataMort.loc[dataMort['Country Name'] == singleCountry]
@@ -51,7 +48,6 @@ def dataframeCreation(singleCountry):
     rowPopDen = dataPopDen.loc[dataPopDen['Country Name'] == singleCountry]
     rowPop = dataPop.loc[dataPop['Country Name'] == singleCountry]
     rowServ = dataServ.loc[dataServ['Country Name'] == singleCountry]
-    rowArea = dataArea.loc[dataArea['Country Name'] == singleCountry]
 
     # Transposing columns and rows
     colGDP = rowGDP.T
@@ -60,7 +56,6 @@ def dataframeCreation(singleCountry):
     colBirth = rowBirth.T
     colDeath = rowDeath.T
     colIndiv = rowIndiv.T
-    colLit = rowLit.T
     colIndus = rowIndus.T
     colMobile = rowMobile.T
     colMort = rowMort.T
@@ -68,14 +63,12 @@ def dataframeCreation(singleCountry):
     colPopDen = rowPopDen.T
     colPop = rowPop.T
     colServ = rowServ.T
-    colArea = rowArea.T
 
     # Concatenating the different factors into 1 dataframe
     df = pd.concat([colGDP, colAgri, colArab, colBirth, colDeath, colIndiv, colIndus, colMobile, colMort, colCrop,
-                    colPopDen, colPop, colServ, colArea], axis=1)
+                    colPopDen, colPop, colServ], axis=1)
     df.columns = ['GDP', 'Agriculture', 'Arable Land', 'Birth Rate', 'Death Rate', 'Individuals using Internet', 'Industry',
-                  'Mobile Subscriptions', 'Mortality Rate', 'Cropland', 'Population Density', 'Population', 'Services',
-                  'Surface Area']
+                  'Mobile Subscriptions', 'Mortality Rate', 'Cropland', 'Population Density', 'Population', 'Services']
     df.drop(['Series Name', 'Series Code', 'Country Name', 'Country Code'], axis=0, inplace=True)
     new_index = []
     for i in df.index:
@@ -101,27 +94,35 @@ def dataframeCreation(singleCountry):
 # Prerequisites for Tab 2 - Correlation value of GDP vs Factor
 def corrGDPDict(dataframe):
     df = dataframe
-    corrDict = {}
-    for i in range(1, len(df.columns)):
-         col1 = df['GDP']
-         col2 = df[df.columns[i]]
-         correlation = col1.corr(col2)
-         corrDict[df.columns[i]] = correlation
-    GDPCorrDict = sorted(corrDict.items(), key=lambda x: x[1], reverse=True)
-    return GDPCorrDict
+    if df is False:
+        tk.messagebox.showinfo("Error", "Insufficient data")
+        return 0
+    else:
+        corrDict = {}
+        for i in range(1, len(df.columns)):
+            col1 = df['GDP']
+            col2 = df[df.columns[i]]
+            correlation = col1.corr(col2)
+            corrDict[df.columns[i]] = correlation
+        GDPCorrDict = sorted(corrDict.items(), key=lambda x: x[1], reverse=True)
+        return GDPCorrDict
 
 
 # Prerequisites for Tab 2 - Correlation Dictionary
 def dict(dataframe):
     df = dataframe
-    corrDict = {}
-    for i in range(1, len(df.columns)):
-         col1 = df['GDP']
-         col2 = df[df.columns[i]]
-         correlation = col1.corr(col2)
-         corrDict[df.columns[i]] = correlation
-    # print(corrDict)
-    return corrDict
+    if df is False:
+        tk.messagebox.showinfo("Error", "Insufficient data")
+        return 0
+    else:
+        corrDict = {}
+        for i in range(1, len(df.columns)):
+            col1 = df['GDP']
+            col2 = df[df.columns[i]]
+            correlation = col1.corr(col2)
+            corrDict[df.columns[i]] = correlation
+        # print(corrDict)
+        return corrDict
 
 
 # Tab 2 - Function that displays Correlation Table
@@ -156,16 +157,13 @@ def heatMap(dataframe):
 def displayFactorsGraph(dict, dataframe):
     GDPCorrDict = dict
     df = dataframe
-    if df is False:
-        tk.messagebox.showinfo("Error", "Insufficient data")
-    else:
-        plt.figure("GDP Factors", figsize=(12,6))
-        plt.suptitle("GDP Factors")
-        for i in range(len(GDPCorrDict)):
-            plt.subplot(5, 3, i + 1)
-            sns.lineplot(x=GDPCorrDict[i][0], y='GDP', data=df)
-        plt.tight_layout()
-        plt.show()
+    plt.figure("GDP Factors", figsize=(12,6))
+    plt.suptitle("GDP Factors")
+    for i in range(len(GDPCorrDict)):
+        plt.subplot(5, 3, i + 1)
+        sns.lineplot(x=GDPCorrDict[i][0], y='GDP', data=df)
+    plt.tight_layout()
+    plt.show()
 
 
 # Tab 2 - Simple Linear Regression Models (GDP vs Factors)
@@ -218,14 +216,13 @@ def linearReg(countryInput, dataframe):
 
 # Tab 2 - Function that allows user to view factor specific data
 def displayFactor(country, dataframe, factor):
+    countryName = country
     df = dataframe
     if df is False:
         tk.messagebox.showinfo("Error", "Insufficient data")
     else:
-        countryName = country
-        dfGDP = df['GDP']
         dfFactor = df[factor]
-        df = pd.concat([dfGDP, dfFactor], axis=1)
+        df = pd.concat([dfFactor], axis=1)
         window = tk.Toplevel()
         window.title(countryName + "'s " + factor + ' Data')
         f = Frame(window)

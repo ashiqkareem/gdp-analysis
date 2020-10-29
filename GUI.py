@@ -235,7 +235,21 @@ allCountries = ["Afghanistan",
                 "Zimbabwe"
                 ]
 
-gdpFactorsList = ["GDP, PPP (current international $)",
+gdpFactorsList1 = ["Agriculture, forestry, and fishing, value added (% of GDP)",
+                  "Arable land (% of land area)",
+                  "Birth rate, crude (per 1,000 people)",
+                  "Death rate, crude (per 1,000 people)",
+                  "Individuals using the Internet (% of population)",
+                  "Industry (including construction), value added (% of GDP)",
+                  "Literacy rate, adult total (% of people ages 15 and above)",
+                  "Mobile cellular subscriptions (per 100 people)",
+                  "Mortality rate, infant (per 1,000 live births)",
+                  "Permanent cropland (% of land area)",
+                  "Population density (people per sq. km of land area)",
+                  "Population, total",
+                  "Services, value added (% of GDP)"]
+
+gdpFactorsList2 = ["GDP, PPP (current international $)",
                   "Agriculture, forestry, and fishing, value added (% of GDP)",
                   "Arable land (% of land area)",
                   "Birth rate, crude (per 1,000 people)",
@@ -283,8 +297,10 @@ frame2T3 = Frame(tab3, width=700, height=180, bg="lightblue")
 frame2T3.grid(columnspan=3, row=1)
 frame3T3 = Frame(tab3, width=700, height=40, bg="lightblue")
 frame3T3.grid(columnspan=3, row=2)
-frame4T3 = Frame(tab3, width=700, height=130, bg="lightblue")
+frame4T3 = Frame(tab3, width=700, height=50, bg="lightblue")
 frame4T3.grid(columnspan=3, row=3)
+frame5T3 = Frame(tab3, width=700, height=80, bg="lightblue")
+frame5T3.grid(columnspan=3, row=4)
 
 # Tab 1 frame elements
 dwlimpLblT1 = Label(frameT1, text="Download/Import Data Sets", bg="lightblue")
@@ -361,7 +377,7 @@ facLblT2 = Label(frame3T2, text="Select a GDP factor:", bg="lightblue")
 facLblT2.grid(column=1, row=1, pady=30, sticky="w")
 
 facCmbT2 = ttk.Combobox(frame3T2, width=62, state="readonly")
-facCmbT2["values"] = gdpFactorsList
+facCmbT2["values"] = gdpFactorsList1
 facCmbT2.current(0)
 facCmbT2.grid(column=2, row=1)
 
@@ -382,6 +398,8 @@ def gdpFac():
         displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Individuals using Internet")
     elif facCmbT2.get() == "Industry (including construction), value added (% of GDP)":
         displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Industry")
+    elif facCmbT2.get() == "Literacy rate, adult total (% of people ages 15 and above)":
+        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Literacy Rate")
     elif facCmbT2.get() == "Mobile cellular subscriptions (per 100 people)":
         displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Mobile Subscriptions")
     elif facCmbT2.get() == "Mortality rate, infant (per 1,000 live births)":
@@ -421,7 +439,7 @@ facLblT3 = Label(frame2T3, text="Select a GDP factor", bg="lightblue")
 facLblT3.grid(column=0, row=0, padx=125, pady=30)
 
 facCmbT3 = ttk.Combobox(frame2T3, width=50, state="readonly")
-facCmbT3["values"] = gdpFactorsList
+facCmbT3["values"] = gdpFactorsList2
 facCmbT3.current(0)
 facCmbT3.grid(column=0, row=1)
 
@@ -450,8 +468,8 @@ def yearAct():
 actBtnT3 = Button(frame2T3, text="Generate", width=45, command=yearAct)
 actBtnT3.grid(column=1, row=2)
 
-warnLblT3 = Label(frame3T3, text="WARNING: EXPERIMENTAL FEATURE BELOW. PLEASE WAIT 2 MINUTES FOR GRAPH TO BE GENERATED", bg="lightblue", fg="red")
-warnLblT3.grid(column=0, row=0, padx=70)
+warnLblT3 = Label(frame3T3, text="WARNING: EXPERIMENTAL FEATURE BELOW. PLEASE WAIT UP TO 1 MINUTE FOR GRAPH TO BE GENERATED", bg="lightblue", fg="red")
+warnLblT3.grid(column=0, row=0, padx=60)
 
 seperator2T3 = ttk.Separator(frame4T3, orient=HORIZONTAL)
 seperator2T3.grid(column=0, row=0, padx=15)
@@ -471,27 +489,11 @@ preYearCmbT3["values"] = (preYearList)
 preYearCmbT3.current(0)
 preYearCmbT3.grid(column=2, row=0)
 
-actLbl2T3 = Label(frame4T3, text="Select an action:", bg="lightblue")
-actLbl2T3.grid(column=1, row=1, pady=30, sticky="w")
+preBtnT3 = Button(frame5T3, text="Predict GDP Of 30 Most Wealthiest Countries In 2015", width=60)
+preBtnT3.grid(column=0, row=0, padx=40, sticky="w")
 
-act2CmbT3 = ttk.Combobox(frame4T3, width=62, state="readonly")
-act2CmbT3["values"] = ("Display GDP of all countries in Year X",
-                       "Display top 10 GDP predictions in Year X in bar graphs",
-                       "Display bottom 10 GDP predictions in Year X in bar graphs")
-act2CmbT3.current(0)
-act2CmbT3.grid(column=2, row=1)
-
-def preYearAct():
-    '''Link prediction year to action button'''
-    if act2CmbT3.get() == "Display GDP of all countries in Year X":
-        allYearsGDPPrediction(countryList(), 2020)
-    elif act2CmbT3.get() == "Display GDP of top 10 countries in Year X in bar graphs":
-        print(act2CmbT3.get(), preYearCmbT3.get())
-    else:
-        print(act2CmbT3.get(), preYearCmbT3.get())
-
-actBtn2T3 = Button(frame4T3, text="Generate", width=15, command=preYearAct)
-actBtn2T3.grid(column=3, row=1, padx=10, sticky="w")
+actBtn2T3 = Button(frame5T3, text="Export", width=15)
+actBtn2T3.grid(column=1, row=0, padx=10, sticky="w")
 
 # Apply elements to frames
 frameT1.grid_propagate(0)
@@ -502,6 +504,7 @@ frameT3.grid_propagate(0)
 frame2T3.grid_propagate(0)
 frame3T3.grid_propagate(0)
 frame4T3.grid_propagate(0)
+frame5T3.grid_propagate(0)
 
 # Size window and disable resize
 window.geometry("700x400")

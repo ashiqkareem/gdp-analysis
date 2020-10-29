@@ -47,7 +47,7 @@ def clean_dataframe(frame):
 
 
 # Declare variable and GDP dataframe
-num = 11
+num = 10
 df = pd.DataFrame(dataGDP)
 df = clean_dataframe(df)
 
