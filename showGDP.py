@@ -91,7 +91,8 @@ def display_all(user_input):
     new_df.drop(['Series Name', 'Series Code', 'Country Code'], axis=1, inplace=True)
     new_df.reset_index(drop=True,inplace=True)
     window = tk.Toplevel()
-    window.title('GPD For All Countries')
+    window.title('GPD For All Countries In ' + user_input)
+    window.geometry("500x700")
     f = Frame(window)
     f.pack(fill=BOTH, expand=1)
     pt = Table(f, dataframe=new_df, showstatusbar=True, width=200, height=300)
@@ -136,6 +137,7 @@ def display_specific_factor(user_input, factor_input):
     """
     for file in file_selection:
         if file["Series Name"][0] == factor_input:
+            plt.figure(factor_input + " In " + user_input)
             df_2 = pd.DataFrame(file)
             df_2 = clean_dataframe(df_2)
             df_2[user_input] = pd.to_numeric(df_2[user_input], errors='coerce')

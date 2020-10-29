@@ -8,13 +8,6 @@ from pandastable import config
 from showGDP import *
 from data import *
 
-
-def importMsg():
-    if True:
-        msgLblT1.config(text="File import success!", fg="green")
-    else:
-        msgLblT1.config(text="File import failed!", fg="red")
-
 # Define all countries
 allCountries = ["Afghanistan",
                 "Albania",
@@ -241,7 +234,6 @@ gdpFactorsList1 = ["Agriculture, forestry, and fishing, value added (% of GDP)",
                   "Death rate, crude (per 1,000 people)",
                   "Individuals using the Internet (% of population)",
                   "Industry (including construction), value added (% of GDP)",
-                  "Literacy rate, adult total (% of people ages 15 and above)",
                   "Mobile cellular subscriptions (per 100 people)",
                   "Mortality rate, infant (per 1,000 live births)",
                   "Permanent cropland (% of land area)",
@@ -256,7 +248,6 @@ gdpFactorsList2 = ["GDP, PPP (current international $)",
                   "Death rate, crude (per 1,000 people)",
                   "Individuals using the Internet (% of population)",
                   "Industry (including construction), value added (% of GDP)",
-                  "Literacy rate, adult total (% of people ages 15 and above)",
                   "Mobile cellular subscriptions (per 100 people)",
                   "Mortality rate, infant (per 1,000 live births)",
                   "Permanent cropland (% of land area)",
@@ -306,11 +297,10 @@ frame5T3.grid(columnspan=3, row=4)
 dwlimpLblT1 = Label(frameT1, text="Download/Import Data Sets", bg="lightblue")
 dwlimpLblT1.grid(column=0, row=0, padx=30, pady=35, sticky="w")
 
-dwlBtnT1 = Button(frameT1, text="Download GDPAnalysis.ZIP File", width=90)
+dwlBtnT1 = Button(frameT1, text="Download GDPAnalysis.ZIP File", width=90, command=download_zip)
 dwlBtnT1.grid(column=0, row=1, padx=30, pady=35, sticky="w")
 
-impBtnT1 = Button(frameT1, text="Import Your Own .ZIP File",
-                  width=90, command=importMsg)
+impBtnT1 = Button(frameT1, text="Import Your Own .ZIP File",width=90, command=unzip)
 impBtnT1.grid(column=0, row=2, padx=30, pady=55, sticky="w")
 
 msgLblT1 = Label(frameT1, text="", bg="lightblue", width=90)
@@ -346,11 +336,11 @@ def countryAct():
     if actCmbT2.get() == "List correlation values of GDP factors":
         displayCorrTable(dict(dataframeCreation(countryCmbT2.get())), countryCmbT2.get())
     elif actCmbT2.get() == "Display correlations values in heat map":
-        heatMap(dataframeCreation(countryCmbT2.get()))
+        heatMap(dataframeCreation(countryCmbT2.get()), countryCmbT2.get())
     elif actCmbT2.get() == "Display GDP factors in graphs":
-        displayFactorsGraph(corrGDPDict(dataframeCreation(countryCmbT2.get())), dataframeCreation(countryCmbT2.get()))
+        displayFactorsGraph(corrGDPDict(dataframeCreation(countryCmbT2.get())), dataframeCreation(countryCmbT2.get()), countryCmbT2.get())
     elif actCmbT2.get() == "Display simple linear regression graphs (GDP VS Factors)":
-        displayLinearRegFactor(dataframeCreation(countryCmbT2.get()))
+        displayLinearRegFactor(dataframeCreation(countryCmbT2.get()), countryCmbT2.get())
     else:
         linearReg(countryCmbT2, dataframeCreation(countryCmbT2.get()))
 
@@ -398,8 +388,6 @@ def gdpFac():
         displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Individuals using Internet")
     elif facCmbT2.get() == "Industry (including construction), value added (% of GDP)":
         displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Industry")
-    elif facCmbT2.get() == "Literacy rate, adult total (% of people ages 15 and above)":
-        displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Literacy Rate")
     elif facCmbT2.get() == "Mobile cellular subscriptions (per 100 people)":
         displayFactor(country2CmbT2.get(), dataframeCreation(country2CmbT2.get()), "Mobile Subscriptions")
     elif facCmbT2.get() == "Mortality rate, infant (per 1,000 live births)":
@@ -485,15 +473,12 @@ while preYear <= 2099:
     preYear += 1
 
 preYearCmbT3 = ttk.Combobox(frame4T3, width=62, state="readonly")
-preYearCmbT3["values"] = (preYearList)
+preYearCmbT3["values"] = preYearList
 preYearCmbT3.current(0)
 preYearCmbT3.grid(column=2, row=0)
-
-preBtnT3 = Button(frame5T3, text="Predict GDP Of 30 Most Wealthiest Countries In 2015", width=60)
-preBtnT3.grid(column=0, row=0, padx=40, sticky="w")
-
-actBtn2T3 = Button(frame5T3, text="Export", width=15)
-actBtn2T3.grid(column=1, row=0, padx=10, sticky="w")
+    
+preBtnT3 = Button(frame5T3, text="Predict GDP Of 30 Most Wealthiest Countries In 2015", width=95, command=lambda: allYearsGDPPrediction(countryList(), int(preYearCmbT3.get())))
+preBtnT3.grid(column=0, row=0, padx=10, sticky="w")
 
 # Apply elements to frames
 frameT1.grid_propagate(0)

@@ -8,6 +8,8 @@ import tkinter as tk
 from tkinter import *
 import xlsxwriter
 import os
+import requests
+import zipfile
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
@@ -87,9 +89,40 @@ def dataframeCreation(singleCountry):
     else:
         return df
 
+# Tab 1 -Function that allows for downloading of datasets
+def download_zip():
+    url = 'https://raw.github.com/ashiqkareem/gdp-analysis/master/files.zip'
+
+    r = requests.get(url)
+    with open("files.zip", "wb") as code:
+        code.write(r.content)
+
+    tk.messagebox.showinfo("Success", "Download completed successfully!")
+
 # Tab 1 - Function that allows for importing of datasets
 
-# Tab 1 -Function that allows for exporting of datasets
+def unzip():
+    with zipfile.ZipFile('files.zip', 'r') as my_zip:
+        my_zip.extractall('Datasets')
+
+        # Dataframes
+        path ="../gdp-analysis/rawDataSet/"
+        dataGDP = pd.read_csv(path + 'GDP, PPP (current international $).csv')
+        dataAgri = pd.read_csv(path + 'Agriculture, forestry, and fishing, value added (% of GDP).csv')
+        dataArab = pd.read_csv(path + 'Arable land (% of land area).csv')
+        dataBirth = pd.read_csv(path + 'Birth rate, crude (per 1,000 people).csv')
+        dataDeath = pd.read_csv(path + 'Death rate, crude (per 1,000 people).csv')
+        dataIndiv = pd.read_csv(path + 'Individuals using the Internet (% of population).csv')
+        dataIndus = pd.read_csv(path + 'Industry (including construction), value added (% of GDP).csv')
+        dataMobile = pd.read_csv(path + 'Mobile cellular subscriptions (per 100 people).csv')
+        dataMort = pd.read_csv(path + 'Mortality rate, infant (per 1,000 live births).csv')
+        dataCrop = pd.read_csv(path + 'Permanent cropland (% of land area).csv')
+        dataPopDen = pd.read_csv(path + 'Population density (people per sq. km of land area).csv')
+        dataPop = pd.read_csv(path + 'Population, total.csv')
+        dataServ = pd.read_csv(path + 'Services, value added (% of GDP).csv')
+        dataArea = pd.read_csv(path + 'Surface area (sq. km).csv')
+        
+    tk.messagebox.showinfo("Success", "Import completed successfully!")
 
 # Prerequisites for Tab 2 - Correlation value of GDP vs Factor
 def corrGDPDict(dataframe):
@@ -142,22 +175,23 @@ def displayCorrTable(dict,userSelection):
 
 
 # Tab 2 - Function that displays heatmap consisting correlation values
-def heatMap(dataframe):
+def heatMap(dataframe, country):
     df = dataframe
     if df is False:
         tk.messagebox.showinfo("Error", "Insufficient data")
     else:
-        plt.figure(figsize=(12, 12))
+        plt.figure("%s - Correlation Values In Heatmap"%country,figsize=(12, 6))
         sns.heatmap(data=df.iloc[:, 0:].corr(), annot=True, fmt='.2f', cmap='coolwarm')
+        plt.tight_layout()
         plt.show()
     
 
 
 # Tab 2 - Function that displays GDP Factor graph
-def displayFactorsGraph(dict, dataframe):
+def displayFactorsGraph(dict, dataframe, country):
     GDPCorrDict = dict
     df = dataframe
-    plt.figure("GDP Factors", figsize=(12,6))
+    plt.figure("%s - GDP Factors"%country, figsize=(12,6))
     plt.suptitle("GDP Factors")
     for i in range(len(GDPCorrDict)):
         plt.subplot(5, 3, i + 1)
@@ -167,7 +201,7 @@ def displayFactorsGraph(dict, dataframe):
 
 
 # Tab 2 - Simple Linear Regression Models (GDP vs Factors)
-def displayLinearRegFactor(dataframe):
+def displayLinearRegFactor(dataframe, country):
     df = dataframe
     if df is False:
         tk.messagebox.showinfo("Error", "Insufficient data")
@@ -177,7 +211,7 @@ def displayLinearRegFactor(dataframe):
             if i == 'GDP':
                 pass
             else:
-                plt.figure("Simple Linear Regression Models", figsize=(12, 6))
+                plt.figure("%s - Simple Linear Regression Models"%country, figsize=(12, 6))
                 plt.subplot(5, 3, x + 1)
                 x += 1
                 X = df[i].values.reshape(-1, 1)
@@ -209,7 +243,7 @@ def linearReg(countryInput, dataframe):
         plt.plot(X, y_pred, color='red')
         # plt.title(countryInput + "'s Best Fit Line") # Better Graph Title
         plt.xlabel('Years')
-        plt.ylabel('GDP Per Capita (Constant LCU)')
+        plt.ylabel('GDP, PPP (current international $)')
         plt.show()
         # print(countryInput, lr.predict([[yearInput]]))
 
@@ -224,7 +258,7 @@ def displayFactor(country, dataframe, factor):
         dfFactor = df[factor]
         df = pd.concat([dfFactor], axis=1)
         window = tk.Toplevel()
-        window.title(countryName + "'s " + factor + ' Data')
+        window.title(countryName + " - " + factor + ' Data')
         f = Frame(window)
         f.pack(fill=BOTH, expand=1)
         pt = Table(f, dataframe=df, showstatusbar=True, width=200, height=300)
@@ -245,15 +279,11 @@ def exportCSV(dataframe, country):
 # Checking whether functions work here
 
 def countryList():
-    dataGDP = pd.read_csv('../gdp-analysis/rawDataSet/GDP, PPP (current international $).csv')
-    dataGDP = dataGDP.dropna()
-    dataGDP = dataGDP.set_index('Country Name')
-    dataGDP.drop(['Series Name', 'Series Code', 'Country Code'], axis=1, inplace=True)
-    counter = 0
-    countries = []
-    for i in dataGDP.index:
-        counter += 1
-        countries.append(i)
+    countries = ['United States', 'China', 'India', 'Japan', 'Germany', 'Russian Federation', 'Brazil',
+                 'United Kingdom', 'France', 'Indonesia', 'Italy', 'Mexico', 'Turkey', 'Korea, Rep.', 'Spain',
+                 'Canada', 'Saudi Arabia', 'Australia', 'Thailand', 'Iran, Islamic Rep.', 'Egypt, Arab Rep.', 'Poland',
+                 'Nigeria', 'Pakistan', 'Argentina', 'Netherlands', 'Malaysia', 'Philippines', 'South Africa',
+                 'Colombia']
     return countries
 
 def linearReg2(countryInput, yearInput, dataframe):
@@ -267,22 +297,22 @@ def linearReg2(countryInput, yearInput, dataframe):
     plt.plot(X, y_pred, color='red')
     plt.title(countryInput + "'s Best Fit Line") # Better Graph Title
     plt.xlabel('Years')
-    plt.ylabel('GDP Per Capita (Constant LCU)')
+    plt.ylabel('GDP, PPP (current international $)')
     # plt.show()
     return countryInput, lr.predict([[yearInput]])
 
 # Tab 3 - Functions that displays GDP of all countries in Year X
 def allYearsGDPPrediction(countries, predictionYear):
-    df = pd.DataFrame(columns=['Countries', 'Predicted GDP'])
+    df = pd.DataFrame(columns=['Countries', 'GDP in 2015', 'Predicted GDP in '+ str(predictionYear)])
     for i in countries:
         if dataframeCreation(i) is False:
             print(i + "'s dataframe is empty!")
             df = df.append(pd.Series([i, 'No Data To Make Prediction'], index=df.columns), ignore_index=True)
         else:
-            pred = linearReg2(i, predictionYear, dataframeCreation(i))[1][0][0]
-            print(i, pred)
-            df = df.append(pd.Series([i, pred], index=df.columns), ignore_index=True)
-    print(df)
+            pred1 = linearReg2(i, 2015, dataframeCreation(i))[1][0][0]
+            pred2 = linearReg2(i, predictionYear, dataframeCreation(i))[1][0][0]
+            df = df.append(pd.Series([i, pred1, pred2], index=df.columns), ignore_index=True)
+            df.index += 1
     window = tk.Toplevel()
     window.title("All Countries' GDP Prediction in the year: %s" % predictionYear)
     f = Frame(window)
@@ -292,3 +322,4 @@ def allYearsGDPPrediction(countries, predictionYear):
     config.apply_options(options, pt)
     pt.showIndex()
     pt.show()
+    return df
