@@ -75,11 +75,9 @@ def plot_design(title):
     """
     plt.title(title)
     plt.xlabel("GDP")
-    plt.xscale("log")
-    plt.gca().xaxis.set_major_formatter(ScalarFormatter())
     plt.ylabel("Countries")
     plt.tight_layout()
-    plt.xticks(fontsize='8',rotation='90')
+    plt.xticks(fontsize='8')
     plt.show()
 
 
@@ -124,7 +122,7 @@ def display_btm_gdp(user_input):
     """
     new_df = trim_column(df, user_input)
     new_df[user_input] = new_df[user_input].astype(float)
-    new_df.sort_values(by=[user_input, "Country Name"], inplace=True)
+    new_df.sort_values(by=[user_input], inplace=True)
     plt.barh(new_df['Country Name'][:num], new_df[user_input][:num])
     plot_design("GDP Of Bottom Countries")
 
@@ -140,7 +138,8 @@ def display_specific_factor(user_input, factor_input):
         if file["Series Name"][0] == factor_input:
             df_2 = pd.DataFrame(file)
             df_2 = clean_dataframe(df_2)
-            df_2.sort_values(by=[user_input, "Country Name"], inplace=True)
-            plt.barh(df_2['Country Name'][-num:], df_2[user_input][-num:])
-            plt.style.use("fivethirtyeight")
+            df_2[user_input] = pd.to_numeric(df_2[user_input], errors='coerce')
+            df_2[user_input] = df_2[user_input].astype(float)
+            df_2.sort_values(by=[user_input], ascending=False, inplace=True)
+            plt.barh(df_2['Country Name'][:num], df_2[user_input][:num])
             plot_design(factor_input)
