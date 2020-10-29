@@ -110,8 +110,9 @@ def display_top_gdp(user_input):
     Generate DataFrame based on factor value and plot accordingly
     """
     new_df = trim_column(df, user_input)
-    new_df.sort_values(by=[user_input, "Country Name"], inplace=True)
-    plt.barh(new_df['Country Name'][-num:], new_df[user_input][-num:])
+    new_df[user_input] = new_df[user_input].astype(float)
+    new_df = new_df.sort_values(by=[user_input], ascending=False)
+    plt.barh(new_df['Country Name'][:num], new_df[user_input][:num])
     plot_design("GDP Of Top Countries")
 
 
@@ -122,6 +123,7 @@ def display_btm_gdp(user_input):
     Generate DataFrame based on year value and plot accordingly
     """
     new_df = trim_column(df, user_input)
+    new_df[user_input] = new_df[user_input].astype(float)
     new_df.sort_values(by=[user_input, "Country Name"], inplace=True)
     plt.barh(new_df['Country Name'][:num], new_df[user_input][:num])
     plot_design("GDP Of Bottom Countries")
@@ -142,13 +144,3 @@ def display_specific_factor(user_input, factor_input):
             plt.barh(df_2['Country Name'][-num:], df_2[user_input][-num:])
             plt.style.use("fivethirtyeight")
             plot_design(factor_input)
-
-
-"""
-For testing purposes:
-# display_all()
-# display_top_gdp(user_year)
-# display_btm_gdp(user_year)
-# display_specific_factor(user_year,user_factor)
-# mainloop()
-"""
