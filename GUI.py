@@ -297,10 +297,10 @@ frame5T3.grid(columnspan=3, row=4)
 dwlimpLblT1 = Label(frameT1, text="Download/Import Data Sets", bg="lightblue")
 dwlimpLblT1.grid(column=0, row=0, padx=30, pady=35, sticky="w")
 
-dwlBtnT1 = Button(frameT1, text="Download GDPAnalysis.ZIP File", width=90, command=download_zip)
+dwlBtnT1 = Button(frameT1, text="Download files.zip", width=90, command=download_zip)
 dwlBtnT1.grid(column=0, row=1, padx=30, pady=35, sticky="w")
 
-impBtnT1 = Button(frameT1, text="Import Your Own .ZIP File",width=90, command=unzip)
+impBtnT1 = Button(frameT1, text="Import Your Own .zip File",width=90, command=unzip)
 impBtnT1.grid(column=0, row=2, padx=30, pady=55, sticky="w")
 
 msgLblT1 = Label(frameT1, text="", bg="lightblue", width=90)
